@@ -1,67 +1,81 @@
 package br.edu.ifpb.pps.domain.model;
 
-import br.edu.ifpb.pps.domain.enums.StatusArtigo;
-
 import java.util.List;
+import java.util.Set;
+
+import br.edu.ifpb.pps.domain.enums.CategoriaSubmissao;
 
 public class Artigo {
-
-    private int id;
+    private long id;
+    private List<Autoria> autores;
     private String titulo;
+    private List<AreaTematica> areaTematica;
     private String resumo;
     private Evento evento;
-    private CategoriaSubmissao categoria;
-    private List<AreaTematica> areasTematicas;
-    private List<Autoria> autorias;
-    private StatusArtigo status;
+    private ResultadoDecisao ResultadoDecisao;
+    private EstadoArtigo estado; // interface
 
-    public Artigo(int id, String titulo, String resumo, Evento evento,
-                  CategoriaSubmissao categoria,
-                  List<AreaTematica> areasTematicas,
-                  List<Autoria> autorias) {
-        this.id = id;
-        this.titulo = titulo;
-        this.resumo = resumo;
-        this.evento = evento;
-        this.categoria = categoria;
-        this.areasTematicas = areasTematicas;
-        this.autorias = autorias;
-        this.status = StatusArtigo.SUBMETIDO;
+    public long getId() {
+        return id;
     }
 
-    public int getId() {
-        return id;
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public List<Autoria> getAutores() {
+        return autores;
+    }
+
+    public void setAutores(List<Autoria> autores) {
+        this.autores = autores;
     }
 
     public String getTitulo() {
         return titulo;
     }
 
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public List<AreaTematica> getAreaTematica() {
+        return areaTematica;
+    }
+
+    public void setAreaTematica(List<AreaTematica> areaTematica) {
+        this.areaTematica = areaTematica;
+    }
+
     public String getResumo() {
         return resumo;
+    }
+
+    public void setResumo(String resumo) {
+        this.resumo = resumo;
     }
 
     public Evento getEvento() {
         return evento;
     }
 
-    public CategoriaSubmissao getCategoria() {
-        return categoria;
+    public void setEvento(Evento evento) {
+        this.evento = evento;
     }
 
-    public List<AreaTematica> getAreasTematicas() {
-        return areasTematicas;
+    public ResultadoDecisao getResultadoDecisao() {
+        return ResultadoDecisao;
     }
 
-    public List<Autoria> getAutorias() {
-        return autorias;
+    public void setResultadoDecisao(ResultadoDecisao resultadoDecisao) {
+        ResultadoDecisao = resultadoDecisao;
     }
 
-    public StatusArtigo getStatus() {
-        return status;
+    public EstadoArtigo getEstado() {
+        return estado;
     }
 
-    public void definirStatus(StatusArtigo status) {
-        this.status = status;
+    public void setEstado(EstadoArtigo estado) {
+        this.estado = estado;
     }
 }

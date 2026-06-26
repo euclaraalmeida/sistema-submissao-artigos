@@ -1,26 +1,42 @@
 package br.edu.ifpb.pps.domain.model;
 
+import br.edu.ifpb.pps.domain.enums.TipoAutoria;
+
 public class Autoria {
-
-    private Pesquisador pesquisador;
+    private Long id;
+    private Usuario user;
+    private TipoAutoria tipoAutoria;
     private Artigo artigo;
-    private TipoAutoria tipo;
 
-    public Autoria(Pesquisador pesquisador, Artigo artigo, TipoAutoria tipo) {
-        this.pesquisador = pesquisador;
-        this.artigo = artigo;
-        this.tipo = tipo;
+    public Long getId() {
+        return id;
     }
 
-    public Pesquisador getPesquisador() {
-        return pesquisador;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Usuario getUser() {
+        return user;
+    }
+
+    public void setUser(Usuario user) {
+        this.user = user;
+    }
+
+    public TipoAutoria getTipoAutoria() {
+        return tipoAutoria;
+    }
+
+    public void setTipoAutoria(TipoAutoria tipoAutoria) {
+        this.tipoAutoria = tipoAutoria;
     }
 
     public Artigo getArtigo() {
         return artigo;
     }
 
-    public TipoAutoria getTipo() {
-        return tipo;
+    public void setArtigo(Artigo artigo) {
+        this.artigo = artigo;
     }
 }
