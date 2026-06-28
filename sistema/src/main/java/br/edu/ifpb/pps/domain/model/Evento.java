@@ -15,7 +15,7 @@ public class Evento {
 
     private List<AreaTematica> areasTematicas;
     private List<MembroComite> membrosComite;
-    private List<Artigo> artigos;
+    private List<Artigo> artigos; // isso aqui sai
 
     public Long getId() {
         return id;

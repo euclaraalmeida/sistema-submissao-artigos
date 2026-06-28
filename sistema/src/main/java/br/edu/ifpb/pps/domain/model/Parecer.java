@@ -5,7 +5,8 @@ import java.time.LocalDateTime;
 import br.edu.ifpb.pps.domain.enums.Veredito;
 
 public class Parecer {
-    private AtribuicaoRevisao atribuicaoRevisao;
+    private Long id;
+    private AtribuicaoRevisao Revisor;
     private String pontosPositivos;
     private String pontosNegativos;
     private Veredito veredito;

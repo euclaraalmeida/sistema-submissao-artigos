@@ -5,7 +5,6 @@ import java.util.List;
 public class MembroComite {
     private Long id;
     private Usuario usuario;
-    private Evento evento;
     private List<AreaTematica> especialidades;
 
     public Long getId() {

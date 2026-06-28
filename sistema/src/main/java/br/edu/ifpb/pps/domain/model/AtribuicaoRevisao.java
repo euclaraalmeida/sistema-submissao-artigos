@@ -5,10 +5,10 @@ import java.time.LocalDate;
 import br.edu.ifpb.pps.domain.enums.StatusRevisao;
 
 public class AtribuicaoRevisao {
-    private Long id;
     private Artigo artigo;
     private MembroComite revisor;
     private StatusRevisao status;
+    private Parecer parecer;
 
     public Long getId() {
         return id;

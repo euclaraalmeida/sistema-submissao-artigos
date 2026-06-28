@@ -11,7 +11,7 @@ public class Artigo {
     private String titulo;
     private List<AreaTematica> areaTematica;
     private String resumo;
-    private Evento evento;
+    private Evento evento; // 
     private ResultadoDecisao ResultadoDecisao;
     private EstadoArtigo estado; // interface
 
