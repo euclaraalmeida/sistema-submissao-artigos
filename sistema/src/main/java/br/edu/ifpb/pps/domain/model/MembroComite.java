@@ -23,13 +23,6 @@ public class MembroComite {
         this.usuario = usuario;
     }
 
-    public Evento getEvento() {
-        return evento;
-    }
-
-    public void setEvento(Evento evento) {
-        this.evento = evento;
-    }
 
     public List<AreaTematica> getEspecialidades() {
         return especialidades;

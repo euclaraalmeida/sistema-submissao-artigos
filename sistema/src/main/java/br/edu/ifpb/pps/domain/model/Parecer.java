@@ -6,18 +6,11 @@ import br.edu.ifpb.pps.domain.enums.Veredito;
 
 public class Parecer {
     private Long id;
-    private AtribuicaoRevisao Revisor;
     private String pontosPositivos;
     private String pontosNegativos;
     private Veredito veredito;
 
-    public AtribuicaoRevisao getAtribuicaoRevisao() {
-        return atribuicaoRevisao;
-    }
-
-    public void setAtribuicaoRevisao(AtribuicaoRevisao atribuicaoRevisao) {
-        this.atribuicaoRevisao = atribuicaoRevisao;
-    }
+  
 
     public String getPontosPositivos() {
         return pontosPositivos;

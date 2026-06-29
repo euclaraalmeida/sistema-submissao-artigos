@@ -4,6 +4,12 @@ import java.util.List;
 import java.util.Set;
 
 import br.edu.ifpb.pps.domain.enums.CategoriaSubmissao;
+import br.edu.ifpb.pps.domain.enums.ResultadoDecisao;
+import br.edu.ifpb.pps.pattern.State.EstadoArtigo;
+import br.edu.ifpb.pps.domain.enums.ResultadoDecisao;
+import br.edu.ifpb.pps.pattern.State.ArtigoSubmetido;
+import br.edu.ifpb.pps.pattern.State.ArtigoEmRevisao;
+import br.edu.ifpb.pps.pattern.State.ArtigoFinalizado;
 
 public class Artigo {
     private long id;
@@ -11,10 +17,18 @@ public class Artigo {
     private String titulo;
     private List<AreaTematica> areaTematica;
     private String resumo;
-    private Evento evento; // 
-    private ResultadoDecisao ResultadoDecisao;
-    private EstadoArtigo estado; // interface
+    private Evento evento; 
+    private ResultadoDecisao resultadoDecisao;
+    private EstadoArtigo estado = new ArtigoSubmetido(); // interface
+    // e acho que o evento é necessario aqui pois como saberemos questao do artigo ter prazo paar ser submetido
+    
+    public void distribuirParaRevisao() {
+        estado.distribuirParaRevisao(this);
+    }
 
+    public void finalizar(ResultadoDecisao resultado) {
+        estado.finalizar(this, resultado);
+    }
     public long getId() {
         return id;
     }
@@ -64,11 +78,11 @@ public class Artigo {
     }
 
     public ResultadoDecisao getResultadoDecisao() {
-        return ResultadoDecisao;
+        return resultadoDecisao;
     }
 
     public void setResultadoDecisao(ResultadoDecisao resultadoDecisao) {
-        ResultadoDecisao = resultadoDecisao;
+        resultadoDecisao = resultadoDecisao;
     }
 
     public EstadoArtigo getEstado() {
@@ -78,4 +92,6 @@ public class Artigo {
     public void setEstado(EstadoArtigo estado) {
         this.estado = estado;
     }
+
+    
 }

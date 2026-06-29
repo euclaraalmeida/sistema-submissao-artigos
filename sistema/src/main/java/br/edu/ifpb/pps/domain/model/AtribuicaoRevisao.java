@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import br.edu.ifpb.pps.domain.enums.StatusRevisao;
 
 public class AtribuicaoRevisao {
+    // essa classe nao distribui , elea repesenta uma revisao atribuida
+    private Long id;
     private Artigo artigo;
     private MembroComite revisor;
     private StatusRevisao status;
@@ -41,4 +43,12 @@ public class AtribuicaoRevisao {
     public void setStatus(StatusRevisao status) {
         this.status = status;
     }
+
+    public Parecer getParecer(){
+        return parecer;
+    }
+    public void setParecer(Parecer parecer){
+        this.parecer = parecer;
+    }
+    
 }
