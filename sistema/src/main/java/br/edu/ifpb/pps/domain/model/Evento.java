@@ -15,7 +15,6 @@ public class Evento {
 
     private List<AreaTematica> areasTematicas;
     private List<MembroComite> membrosComite;
-    private List<Artigo> artigos; // isso aqui sai
 
     public Long getId() {
         return id;
@@ -81,11 +80,4 @@ public class Evento {
         this.membrosComite = membrosComite;
     }
 
-    public List<Artigo> getArtigos() {
-        return artigos;
-    }
-
-    public void setArtigos(List<Artigo> artigos) {
-        this.artigos = artigos;
-    }
 }

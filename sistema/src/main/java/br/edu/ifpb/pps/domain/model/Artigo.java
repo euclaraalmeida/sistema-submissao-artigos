@@ -82,7 +82,7 @@ public class Artigo {
     }
 
     public void setResultadoDecisao(ResultadoDecisao resultadoDecisao) {
-        resultadoDecisao = resultadoDecisao;
+        this.resultadoDecisao = resultadoDecisao;
     }
 
     public EstadoArtigo getEstado() {
