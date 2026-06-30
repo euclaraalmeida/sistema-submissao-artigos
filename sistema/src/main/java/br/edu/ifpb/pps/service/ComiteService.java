@@ -17,30 +17,42 @@ public class ComiteService {
 
     public MembroComite registrarMembro(
             Usuario usuario,
-            Evento evento,
-            List<AreaTematica> especialidades
+            Evento evento
+            // aqui vai ter as especialidades em niveias 
     ) {
         validacaoService.objetoObrigatorio(usuario, "Usuario");
         validacaoService.objetoObrigatorio(evento, "Evento");
-        validacaoService.listaObrigatoria(especialidades, "Especialidades");
+        //validacaoService.listaObrigatoria(especialidades, "Especialidades");
 
-        // um if para conferir se o membro ja é do comite
-
+        if (ehMembro(usuario, evento)) {
+            throw new IllegalArgumentException("Usuario ja e membro do comite deste evento.");
+        }
         MembroComite membro = new MembroComite();
         membro.setUsuario(usuario);
 
-        for (AreaTematica area : especialidades) {
-            membro.adicionarEspecialidade(area);
-        }
-
+       // temos que adicionar as especilidades para todos do comite , oq muda é o nivel agr fazer essa atribuiççao
         evento.adicionarMembroComite(membro);
 
         return membro;
     }
 
-    //public boolean ehMembro(Usuario usuario, Evento evento) {}
+    public boolean ehMembro(Usuario usuario, Evento evento) {
+        return buscarMembro(usuario, evento) != null;
+    }
 
-    //public MembroComite buscarMembro(Usuario usuario, Evento evento) {}
+    public MembroComite buscarMembro(Usuario usuario, Evento evento) {
+        if (usuario == null || evento == null) {
+            return null;
+        }
+
+        for (MembroComite membro : evento.getMembrosComite()) {
+            if (membro.getUsuario() == usuario) {
+                return membro;
+            }
+        }
+
+        return null;
+    }
     
     
 

@@ -66,4 +66,7 @@ public class EventoService {
         revisaoRepository.limpar();
         eventoAtual.limparEventoAtual();
     }
+
+
+    // metodo de criação das areas tematicas
 }

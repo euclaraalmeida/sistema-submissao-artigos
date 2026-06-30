@@ -19,7 +19,7 @@ public class App {
         ConsoleUI ui = new ConsoleUI();
         //MenuInicial menuInicial = new MenuInicial(ui);
 
-        //menuInicial.iniciar();
+       // menuInicial.iniciar();
 
         
     }

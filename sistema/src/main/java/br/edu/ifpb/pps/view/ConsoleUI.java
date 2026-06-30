@@ -1,6 +1,12 @@
 package br.edu.ifpb.pps.view;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class ConsoleUI {
     private final Scanner scanner;
@@ -46,4 +52,32 @@ public class ConsoleUI {
         System.out.print("Pressione ENTER para continuar...");
         scanner.nextLine();
     }
+
+
+    private static final DateTimeFormatter DATA_FORMATTER =
+        DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    public LocalDate lerData(String prompt) {
+        while (true) {
+            String valor = lerTexto(prompt + " (dd/MM/yyyy)");
+
+            try {
+                return LocalDate.parse(valor, DATA_FORMATTER);
+            } catch (DateTimeParseException e) {
+                mostrarErro("Informe uma data valida no formato dd/MM/yyyy.");
+            }
+        }
+    }
+
+    public int lerInteiro(String prompt) {
+    while (true) {
+        String valor = lerTexto(prompt);
+
+        try {
+            return Integer.parseInt(valor);
+        } catch (NumberFormatException e) {
+            mostrarErro("Informe um numero inteiro valido.");
+        }
+    }
+}
 }
