@@ -7,6 +7,7 @@ import br.edu.ifpb.pps.domain.enums.StatusRevisao;
 import br.edu.ifpb.pps.domain.enums.Veredito;
 import br.edu.ifpb.pps.domain.model.Artigo;
 import br.edu.ifpb.pps.domain.model.AtribuicaoRevisao;
+import br.edu.ifpb.pps.domain.model.MembroComite;
 import br.edu.ifpb.pps.domain.model.Parecer;
 
 public class ResultadoArtigoService {
@@ -39,7 +40,8 @@ public class ResultadoArtigoService {
                 continue;
             }
 
-            soma += pesoDoVeredito(parecer.getVeredito());
+            soma += pesoDoVeredito(parecer.getVeredito())
+                    * nivelConhecimentoDoRevisor(artigo, atribuicao.getRevisor());
         }
 
         if (soma > 0) {
@@ -51,6 +53,20 @@ public class ResultadoArtigoService {
 
     private boolean pertenceAoArtigo(AtribuicaoRevisao atribuicao, Artigo artigo) {
         return atribuicao.getArtigo() != null && atribuicao.getArtigo().equals(artigo);
+    }
+
+    private int nivelConhecimentoDoRevisor(Artigo artigo, MembroComite revisor) {
+        if (revisor == null) {
+            return 1;
+        }
+
+        int nivel = revisor.maiorNivelConhecimentoNasAreas(artigo.getAreasTematicas());
+
+        if (nivel == 0) {
+            return 1;
+        }
+
+        return nivel;
     }
 
     private boolean todasRevisoesDoArtigoConcluidas(

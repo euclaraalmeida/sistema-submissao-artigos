@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.ifpb.pps.domain.model.AreaTematica;
+import br.edu.ifpb.pps.domain.model.ConhecimentoAreaRevisor;
 import br.edu.ifpb.pps.domain.model.Evento;
 import br.edu.ifpb.pps.domain.model.MembroComite;
 import br.edu.ifpb.pps.domain.model.Usuario;
@@ -24,13 +25,37 @@ public class ComiteService {
         validacaoService.objetoObrigatorio(evento, "Evento");
         validacaoService.listaObrigatoria(especialidades, "Especialidades");
 
+        MembroComite membro = new MembroComite();
+        membro.setUsuario(usuario);
+
+        for (AreaTematica area : especialidades) {
+            membro.adicionarConhecimentoArea(area, 1);
+        }
+
+        evento.adicionarMembroComite(membro);
+
+        return membro;
+    }
+
+    public MembroComite registrarMembroComConhecimentos(
+            Usuario usuario,
+            Evento evento,
+            List<ConhecimentoAreaRevisor> conhecimentosPorArea
+    ) {
+        validacaoService.objetoObrigatorio(usuario, "Usuario");
+        validacaoService.objetoObrigatorio(evento, "Evento");
+        validacaoService.listaObrigatoria(conhecimentosPorArea, "Conhecimentos por area");
+
         // um if para conferir se o membro ja é do comite
 
         MembroComite membro = new MembroComite();
         membro.setUsuario(usuario);
 
-        for (AreaTematica area : especialidades) {
-            membro.adicionarEspecialidade(area);
+        for (ConhecimentoAreaRevisor conhecimento : conhecimentosPorArea) {
+            membro.adicionarConhecimentoArea(
+                    conhecimento.getArea(),
+                    conhecimento.getNivelConhecimento()
+            );
         }
 
         evento.adicionarMembroComite(membro);
