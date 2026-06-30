@@ -8,9 +8,9 @@ import br.edu.ifpb.pps.domain.enums.StatusRevisao;
 import br.edu.ifpb.pps.domain.model.AreaTematica;
 import br.edu.ifpb.pps.domain.model.Artigo;
 import br.edu.ifpb.pps.domain.model.AtribuicaoRevisao;
-import br.edu.ifpb.pps.domain.model.Autoria;
 import br.edu.ifpb.pps.domain.model.Evento;
 import br.edu.ifpb.pps.domain.model.MembroComite;
+import br.edu.ifpb.pps.pattern.chain.ValidadorDistribuicao;
 import br.edu.ifpb.pps.repository.ArtigoRepository;
 import br.edu.ifpb.pps.repository.RevisaoRepository;
 
@@ -20,15 +20,18 @@ public class DistribuidorArtigos {
     private final ArtigoRepository artigoRepository;
     private final RevisaoRepository revisaoRepository;
     private final ValidacaoGenericaService validacaoService;
+    private final ValidadorDistribuicao validadorDistribuicao;
 
     public DistribuidorArtigos(
             ArtigoRepository artigoRepository,
             RevisaoRepository revisaoRepository,
-            ValidacaoGenericaService validacaoService
+            ValidacaoGenericaService validacaoService,
+            ValidadorDistribuicao validadorDistribuicao
     ) {
         this.artigoRepository = artigoRepository;
         this.revisaoRepository = revisaoRepository;
         this.validacaoService = validacaoService;
+        this.validadorDistribuicao = validadorDistribuicao;
     }
 
     public List<AtribuicaoRevisao> distribuir(Evento evento) {
@@ -123,8 +126,11 @@ public class DistribuidorArtigos {
             MembroComite revisor,
             List<AtribuicaoRevisao> atribuicoesExistentes
     ) {
-        return !ehAutorDoArtigo(artigo, revisor)
-                && !jaRecebeuArtigo(artigo, revisor, atribuicoesExistentes);
+        return validadorDistribuicao.validar(
+                artigo,
+                revisor,
+                atribuicoesExistentes
+        );
     }
 
     private AtribuicaoRevisao criarAtribuicao(Artigo artigo, MembroComite revisor) {
@@ -142,31 +148,6 @@ public class DistribuidorArtigos {
                 if (areaArtigo == especialidade) {
                     return true;
                 }
-            }
-        }
-
-        return false;
-    }
-
-    private boolean ehAutorDoArtigo(Artigo artigo, MembroComite revisor) {
-        for (Autoria autoria : artigo.getAutores()) {
-            if (autoria.getUser() == revisor.getUsuario()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private boolean jaRecebeuArtigo(
-            Artigo artigo,
-            MembroComite revisor,
-            List<AtribuicaoRevisao> atribuicoesExistentes
-    ) {
-        for (AtribuicaoRevisao atribuicao : atribuicoesExistentes) {
-            if (atribuicao.getArtigo() == artigo
-                    && atribuicao.getRevisor() == revisor) {
-                return true;
             }
         }
 
