@@ -1,6 +1,7 @@
 package br.edu.ifpb.pps.domain.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.ifpb.pps.domain.enums.CategoriaSubmissao;
@@ -13,8 +14,8 @@ public class Evento {
     private LocalDate dataFim;
     private CategoriaSubmissao categoriaSubmissao;
 
-    private List<AreaTematica> areasTematicas;
-    private List<MembroComite> membrosComite;
+    private List<AreaTematica> areasTematicas = new ArrayList<>();
+    private List<MembroComite> membrosComite = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -65,19 +66,26 @@ public class Evento {
     }
 
     public List<AreaTematica> getAreasTematicas() {
-        return areasTematicas;
+        return new ArrayList<>(areasTematicas);
     }
 
-    public void setAreasTematicas(List<AreaTematica> areasTematicas) {
-        this.areasTematicas = areasTematicas;
+    public void adicionarAreaTematica(AreaTematica areaTematica) {
+        if (areaTematica == null) {
+            throw new IllegalArgumentException("Area tematica e obrigatoria.");
+        }
+
+        areasTematicas.add(areaTematica);
     }
 
     public List<MembroComite> getMembrosComite() {
-        return membrosComite;
+        return new ArrayList<>(membrosComite);
     }
 
-    public void setMembrosComite(List<MembroComite> membrosComite) {
-        this.membrosComite = membrosComite;
-    }
+    public void adicionarMembroComite(MembroComite membro) {
+        if (membro == null) {
+            throw new IllegalArgumentException("Membro do comite e obrigatorio.");
+        }
 
+        membrosComite.add(membro);
+    }
 }
