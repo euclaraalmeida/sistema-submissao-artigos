@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.ifpb.pps.domain.enums.ResultadoDecisao;
+import br.edu.ifpb.pps.domain.enums.TipoAutoria;
 import br.edu.ifpb.pps.pattern.State.ArtigoSubmetido;
 import br.edu.ifpb.pps.pattern.State.EstadoArtigo;
 
@@ -50,6 +51,16 @@ public class Artigo {
 
     public List<Autoria> getAutores() {
         return new ArrayList<>(autores);
+    }
+
+    public Usuario getAutorPrincipal() {
+        for (Autoria autoria : autores) {
+            if (autoria.getTipoAutoria() == TipoAutoria.AUTOR_PRINCIPAL) {
+                return autoria.getUser();
+            }
+        }
+
+        return null;
     }
 
     public String getTitulo() {
