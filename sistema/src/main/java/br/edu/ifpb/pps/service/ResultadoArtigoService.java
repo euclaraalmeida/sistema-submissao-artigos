@@ -8,7 +8,7 @@ import br.edu.ifpb.pps.domain.model.Artigo;
 import br.edu.ifpb.pps.domain.model.AtribuicaoRevisao;
 import br.edu.ifpb.pps.domain.model.Parecer;
 
-public class CalculadoraResultadoArtigo {
+public class ResultadoArtigoService {
 
     public ResultadoDecisao calcular(Artigo artigo, List<AtribuicaoRevisao> atribuicoes) {
         int soma = 0;

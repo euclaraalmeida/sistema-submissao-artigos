@@ -14,7 +14,7 @@ import br.edu.ifpb.pps.pattern.chain.ValidadorDistribuicao;
 import br.edu.ifpb.pps.repository.ArtigoRepository;
 import br.edu.ifpb.pps.repository.RevisaoRepository;
 
-public class DistribuidorArtigos {
+public class DistribuicaoArtigosService {
     private static final int QUANTIDADE_REVISORES_POR_ARTIGO = 2;
 
     private final ArtigoRepository artigoRepository;
@@ -22,7 +22,7 @@ public class DistribuidorArtigos {
     private final ValidacaoGenericaService validacaoService;
     private final ValidadorDistribuicao validadorDistribuicao;
 
-    public DistribuidorArtigos(
+    public DistribuicaoArtigosService(
             ArtigoRepository artigoRepository,
             RevisaoRepository revisaoRepository,
             ValidacaoGenericaService validacaoService,
