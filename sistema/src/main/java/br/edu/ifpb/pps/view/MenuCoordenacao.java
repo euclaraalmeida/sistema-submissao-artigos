@@ -15,17 +15,13 @@ import br.edu.ifpb.pps.service.EventoAtual;
 import br.edu.ifpb.pps.service.EventoService;
 import br.edu.ifpb.pps.service.ComiteService;
 import br.edu.ifpb.pps.service.UsuarioService;
+import br.edu.ifpb.pps.domain.model.ConhecimentoAreaRevisor;
 
 /*
-2 - Cadastrar área temática 
 4 - Distribuir artigos 
 5 - Processar/consultar 
 6 - dashboard
 */
-
-
-
-
 
 public class MenuCoordenacao {
     private final ConsoleUI ui;
@@ -72,10 +68,10 @@ public class MenuCoordenacao {
                         evento = eventoAtual.getEventoAtual();
                         break;
                     case "2":
-                        //cadastrarAreaTematica(evento);
+                        cadastrarAreaTematica(evento);
                         break;
                     case "3":
-                        registrarMembroComite(evento);
+                        registrarMembroComConhecimentos(evento) ;                       
                         break;
                     case "4":
                         //distribuirArtigos(evento);
@@ -98,7 +94,7 @@ public class MenuCoordenacao {
     }
 
     private void iniciarNovoEvento() {
-        ui.mostrarTitulo("Iniciar Novo Evento");
+        ui.mostrarTitulo("Encerrar evento atual e iniciar novo evento");
 
         String nome = ui.lerTextoObrigatorio("Nome do evento");
         String cidade = ui.lerTextoObrigatorio("Cidade");
@@ -119,30 +115,29 @@ public class MenuCoordenacao {
     }
 
    
-    private void registrarMembroComite(Evento evento) {
+   private void registrarMembroComConhecimentos(Evento evento) {
         ui.mostrarTitulo("Registrar Membro do Comite");
 
         String email = ui.lerTextoObrigatorio("Email do usuario");
-        Usuario usuario = usuarioService.buscarPorEmail(email);
+        Usuario usuarioEncontrado = usuarioService.buscarPorEmail(email);
 
-        if (usuario == null) {
+        if (usuarioEncontrado == null) {
             ui.mostrarErro("Usuario nao encontrado.");
             ui.pausar();
             return;
         }
-        // selecionar o nivel de conhecimento para cada especialidade
-        //List<AreaTematica> especialidades = selecionarNivel(evento);
 
-        MembroComite membro = comiteService.registrarMembro(
-                usuario,
-                evento
-                // antes
+        List<ConhecimentoAreaRevisor> conhecimentos = informarConhecimentosPorArea(evento);
+
+        MembroComite membro = comiteService.registrarMembroComConhecimentos(
+                usuarioEncontrado,
+                evento,
+                conhecimentos
         );
 
         ui.mostrarMensagem("Membro registrado com sucesso: " + membro.getUsuario().getNome());
         ui.pausar();
     }
-
     
 
     private void listarMembros(Evento evento) {
@@ -166,26 +161,71 @@ public class MenuCoordenacao {
     }
 
 
-    private CategoriaSubmissao escolherCategoria() {
-        while (true) {
-            ui.mostrarMensagem("");
-            ui.mostrarMensagem("Categoria de submissao:");
-            ui.mostrarMensagem("1 - FULL_PAPER");
-            ui.mostrarMensagem("2 - SHORT_PAPER");
-            ui.mostrarMensagem("3 - DEMO");
+        private CategoriaSubmissao escolherCategoria() {
+            while (true) {
+                ui.mostrarMensagem("");
+                ui.mostrarMensagem("Categoria de submissao:");
+                ui.mostrarMensagem("1 - FULL_PAPER");
+                ui.mostrarMensagem("2 - SHORT_PAPER");
+                ui.mostrarMensagem("3 - DEMO");
 
-            String opcao = ui.lerTexto("Escolha");
+                String opcao = ui.lerTexto("Escolha");
 
-            switch (opcao) {
-                case "1":
-                    return CategoriaSubmissao.FULL_PAPER;
-                case "2":
-                    return CategoriaSubmissao.SHORT_PAPER;
-                case "3":
-                    return CategoriaSubmissao.DEMO;
-                default:
-                    ui.mostrarErro("Opcao invalida.");
+                switch (opcao) {
+                    case "1":
+                        return CategoriaSubmissao.FULL_PAPER;
+                    case "2":
+                        return CategoriaSubmissao.SHORT_PAPER;
+                    case "3":
+                        return CategoriaSubmissao.DEMO;
+                    default:
+                        ui.mostrarErro("Opcao invalida.");
+                }
             }
         }
+
+
+    private List<ConhecimentoAreaRevisor> informarConhecimentosPorArea(Evento evento) {
+        List<AreaTematica> areas = evento.getAreasTematicas();
+
+        if (areas.isEmpty()) {
+            throw new IllegalStateException("Nenhuma area tematica cadastrada para o evento.");
+        }
+
+        List<ConhecimentoAreaRevisor> conhecimentos = new ArrayList<>();
+
+        for (AreaTematica area : evento.getAreasTematicas()) {
+            int nivel = escolherNivelConhecimento();
+            conhecimentos.add(new ConhecimentoAreaRevisor(area, nivel));
+        }
+
+        return conhecimentos;
     }
+
+        private void cadastrarAreaTematica(Evento evento) {
+        ui.mostrarTitulo("Cadastrar Area Tematica");
+
+        String nome = ui.lerTextoObrigatorio("Nome da area tematica");
+
+        AreaTematica area = eventoService.cadastrarAreaTematica(evento, nome);
+
+        ui.mostrarMensagem("Area tematica cadastrada com sucesso: " + area.getNome());
+        ui.pausar();
+    }
+    private int escolherNivelConhecimento() {
+        while (true) {
+                ui.mostrarMensagem("Nivel de conhecimento:");
+                ui.mostrarMensagem("1 - Basico");
+                ui.mostrarMensagem("2 - Intermediario");
+                ui.mostrarMensagem("3 - Avançado");
+
+                int nivel = ui.lerInteiro("Escolha o nivel");
+
+                if (nivel >= 1 && nivel <= 3) {
+                    return nivel;
+                }
+
+                ui.mostrarErro("Nivel invalido. Escolha entre 1 e 3.");
+            }
+        }
 }

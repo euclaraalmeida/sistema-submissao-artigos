@@ -18,8 +18,10 @@ public class ComiteService {
 
     public MembroComite registrarMembro(
             Usuario usuario,
-            Evento evento
-            // aqui vai ter as especialidades em niveias 
+            Evento evento,
+            List<AreaTematica> especialidades
+
+
     ) {
         validacaoService.objetoObrigatorio(usuario, "Usuario");
         validacaoService.objetoObrigatorio(evento, "Evento");
@@ -89,5 +91,7 @@ public class ComiteService {
         return new ArrayList<>(evento.getMembrosComite());
     }
 
+
+   
    
 }

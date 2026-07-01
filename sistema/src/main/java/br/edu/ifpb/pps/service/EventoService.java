@@ -1,6 +1,7 @@
 package br.edu.ifpb.pps.service;
 
 import br.edu.ifpb.pps.domain.enums.CategoriaSubmissao;
+import br.edu.ifpb.pps.domain.model.AreaTematica;
 import br.edu.ifpb.pps.domain.model.Evento;
 import br.edu.ifpb.pps.repository.ArtigoRepository;
 import br.edu.ifpb.pps.repository.EventoRepository;
@@ -68,5 +69,16 @@ public class EventoService {
     }
 
 
-    // metodo de criação das areas tematicas
+     public AreaTematica cadastrarAreaTematica(Evento evento, String nome) {
+        validacaoService.objetoObrigatorio(evento, "Evento");
+        validacaoService.textoObrigatorio(nome, "Nome da area tematica");
+
+        AreaTematica area = new AreaTematica();
+        area.setNome(nome);
+
+        evento.adicionarAreaTematica(area);
+
+        return area;
+}
+
 }
