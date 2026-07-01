@@ -6,7 +6,7 @@ import java.util.List;
 public class MembroComite {
     private Long id;
     private Usuario usuario;
-    private List<AreaTematica> especialidades = new ArrayList<>();
+    private List<ConhecimentoAreaRevisor> conhecimentosPorArea = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -24,8 +24,16 @@ public class MembroComite {
         this.usuario = usuario;
     }
 
-    public List<AreaTematica> getEspecialidades() {
-        return new ArrayList<>(especialidades);
+    public List<ConhecimentoAreaRevisor> getConhecimentosPorArea() {
+        return new ArrayList<>(conhecimentosPorArea);
+    }
+
+    public void adicionarConhecimentoArea(AreaTematica areaTematica, int nivelConhecimento) {
+        if (areaTematica == null) {
+            throw new IllegalArgumentException("Area tematica e obrigatoria.");
+        }
+
+        conhecimentosPorArea.add(new ConhecimentoAreaRevisor(areaTematica, nivelConhecimento));
     }
 
     public void adicionarEspecialidade(AreaTematica areaTematica) {
@@ -33,6 +41,21 @@ public class MembroComite {
             throw new IllegalArgumentException("Area tematica e obrigatoria.");
         }
 
-        especialidades.add(areaTematica);
+        adicionarConhecimentoArea(areaTematica, 1);
+    }
+
+    public int maiorNivelConhecimentoNasAreas(List<AreaTematica> areasTematicas) {
+        int maiorNivel = 0;
+
+        for (AreaTematica areaTematica : areasTematicas) {
+            for (ConhecimentoAreaRevisor conhecimento : conhecimentosPorArea) {
+                if (conhecimento.getArea() == areaTematica
+                        && conhecimento.getNivelConhecimento() > maiorNivel) {
+                    maiorNivel = conhecimento.getNivelConhecimento();
+                }
+            }
+        }
+
+        return maiorNivel;
     }
 }

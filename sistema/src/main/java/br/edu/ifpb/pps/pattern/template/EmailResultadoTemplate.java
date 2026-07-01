@@ -5,6 +5,7 @@ import java.util.List;
 import br.edu.ifpb.pps.domain.enums.ResultadoDecisao;
 import br.edu.ifpb.pps.domain.model.Artigo;
 import br.edu.ifpb.pps.domain.model.Parecer;
+import br.edu.ifpb.pps.domain.model.Usuario;
 
 public abstract class EmailResultadoTemplate {
 
@@ -27,9 +28,13 @@ public abstract class EmailResultadoTemplate {
     }
 
     protected String montarSaudacao(Artigo artigo) {
-        // O RF09 usa o nome do autor principal na saudacao.
-        // O modelo atual ainda nao recebe esse dado diretamente, entao mantemos texto generico.
-        return "Prezado(a) autor(a):";
+        Usuario autorPrincipal = artigo.getAutorPrincipal();
+
+        if (autorPrincipal == null || autorPrincipal.getNome() == null) {
+            return "Prezado(a) autor(a):";
+        }
+
+        return "Prezado(a) " + autorPrincipal.getNome() + ":";
     }
 
     protected abstract String montarMensagemPrincipal(

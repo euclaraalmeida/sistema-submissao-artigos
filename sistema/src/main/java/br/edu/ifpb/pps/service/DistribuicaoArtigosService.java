@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import br.edu.ifpb.pps.domain.enums.StatusRevisao;
-import br.edu.ifpb.pps.domain.model.AreaTematica;
 import br.edu.ifpb.pps.domain.model.Artigo;
 import br.edu.ifpb.pps.domain.model.AtribuicaoRevisao;
 import br.edu.ifpb.pps.domain.model.Evento;
@@ -78,7 +77,7 @@ public class DistribuicaoArtigosService {
             return new ArrayList<>();
         }
 
-        List<MembroComite> candidatos = ordenarPorAfinidadeECarga(
+        List<MembroComite> candidatos = ordenarPorCarga(
                 artigo,
                 revisores,
                 atribuicoesExistentes
@@ -103,7 +102,7 @@ public class DistribuicaoArtigosService {
         return selecionados;
     }
 
-    private List<MembroComite> ordenarPorAfinidadeECarga(
+    private List<MembroComite> ordenarPorCarga(
             Artigo artigo,
             List<MembroComite> revisores,
             List<AtribuicaoRevisao> atribuicoesExistentes
@@ -112,9 +111,7 @@ public class DistribuicaoArtigosService {
 
         candidatos.sort(
                 Comparator
-                        .comparing((MembroComite revisor) -> possuiAfinidade(artigo, revisor))
-                        .reversed()
-                        .thenComparing(revisor -> contarAtribuicoesDoRevisor(revisor, atribuicoesExistentes))
+                        .comparing((MembroComite revisor) -> contarAtribuicoesDoRevisor(revisor, atribuicoesExistentes))
                         .thenComparing(revisor -> revisor.getId() == null ? Long.MAX_VALUE : revisor.getId())
         );
 
@@ -140,18 +137,6 @@ public class DistribuicaoArtigosService {
         atribuicao.setStatus(StatusRevisao.PENDENTE);
 
         return atribuicao;
-    }
-
-    private boolean possuiAfinidade(Artigo artigo, MembroComite revisor) {
-        for (AreaTematica areaArtigo : artigo.getAreasTematicas()) {
-            for (AreaTematica especialidade : revisor.getEspecialidades()) {
-                if (areaArtigo == especialidade) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     private int contarAtribuicoesDoArtigo(
