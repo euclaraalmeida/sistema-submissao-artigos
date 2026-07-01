@@ -27,8 +27,12 @@ public class EmailService {
     }
 
     public void enviar(String destinatario, String assunto, String corpo) {
-        validarConfiguracao();
         validarDestinatario(destinatario);
+
+        if (!smtpConfigurado()) {
+            simularEnvio(destinatario, assunto, corpo);
+            return;
+        }
 
         try {
             Message mensagem = new MimeMessage(criarSessao());
@@ -67,16 +71,22 @@ public class EmailService {
         });
     }
 
-    private void validarConfiguracao() {
-        if (estaEmBranco(host)
-                || estaEmBranco(port)
-                || estaEmBranco(usuario)
-                || estaEmBranco(senha)
-                || estaEmBranco(remetente)) {
-            throw new IllegalStateException(
-                    "Configure SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD e SMTP_FROM para enviar e-mails."
-            );
-        }
+    private boolean smtpConfigurado() {
+        return !estaEmBranco(host)
+                && !estaEmBranco(port)
+                && !estaEmBranco(usuario)
+                && !estaEmBranco(senha)
+                && !estaEmBranco(remetente);
+    }
+
+    private void simularEnvio(String destinatario, String assunto, String corpo) {
+        System.out.println("=== E-MAIL SIMULADO ===");
+        System.out.println("SMTP nao configurado. O e-mail abaixo seria enviado em producao.");
+        System.out.println("Destinatario: " + destinatario);
+        System.out.println("Assunto: " + assunto);
+        System.out.println("Corpo:");
+        System.out.println(corpo);
+        System.out.println("=======================");
     }
 
     private boolean estaEmBranco(String valor) {
