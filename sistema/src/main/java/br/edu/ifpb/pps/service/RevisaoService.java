@@ -15,15 +15,26 @@ public class RevisaoService {
     private final RevisaoRepository revisaoRepository;
     private final ResultadoArtigoService resultadoArtigoService;
     private final ValidacaoGenericaService validacaoService;
+    private final CicloRevisoesService cicloRevisoesService;
 
     public RevisaoService(
             RevisaoRepository revisaoRepository,
             ResultadoArtigoService resultadoArtigoService,
             ValidacaoGenericaService validacaoService
     ) {
+        this(revisaoRepository, resultadoArtigoService, validacaoService, null);
+    }
+
+    public RevisaoService(
+            RevisaoRepository revisaoRepository,
+            ResultadoArtigoService resultadoArtigoService,
+            ValidacaoGenericaService validacaoService,
+            CicloRevisoesService cicloRevisoesService
+    ) {
         this.revisaoRepository = revisaoRepository;
         this.resultadoArtigoService = resultadoArtigoService;
         this.validacaoService = validacaoService;
+        this.cicloRevisoesService = cicloRevisoesService;
     }
 
     public List<AtribuicaoRevisao> listarRevisoesPendentes(Usuario usuario, Evento evento) {
@@ -52,7 +63,11 @@ public class RevisaoService {
 
         Artigo artigo = atribuicao.getArtigo();
         List<AtribuicaoRevisao> atribuicoesDoEvento = revisaoRepository.listarPorEvento(artigo.getEvento());
-        resultadoArtigoService.finalizarSePossivel(artigo, atribuicoesDoEvento);
+        boolean artigoFinalizado = resultadoArtigoService.finalizarSePossivel(artigo, atribuicoesDoEvento);
+
+        if (artigoFinalizado && cicloRevisoesService != null) {
+            cicloRevisoesService.publicarSeCicloConcluido(artigo.getEvento());
+        }
 
         return parecer;
     }
