@@ -6,6 +6,7 @@ import java.util.List;
 
 import br.edu.ifpb.pps.domain.enums.CategoriaSubmissao;
 import br.edu.ifpb.pps.domain.model.AreaTematica;
+import br.edu.ifpb.pps.domain.model.Artigo;
 import br.edu.ifpb.pps.domain.model.AtribuicaoRevisao;
 import br.edu.ifpb.pps.domain.model.Evento;
 import br.edu.ifpb.pps.domain.model.MembroComite;
@@ -14,13 +15,20 @@ import br.edu.ifpb.pps.service.DistribuicaoArtigosService;
 import br.edu.ifpb.pps.service.EventoAtual;
 import br.edu.ifpb.pps.service.EventoService;
 import br.edu.ifpb.pps.service.ComiteService;
+import br.edu.ifpb.pps.service.ConsultaArtigoService;
+import br.edu.ifpb.pps.service.DashboardService;
 import br.edu.ifpb.pps.service.UsuarioService;
+import br.edu.ifpb.pps.service.dto.DashboardCoordenacao;
+import br.edu.ifpb.pps.service.dto.FiltroConsultaArtigo;
+import br.edu.ifpb.pps.service.dto.PendenciaAvaliacao;
 import br.edu.ifpb.pps.domain.model.ConhecimentoAreaRevisor;
-
+import br.edu.ifpb.pps.domain.model.Artigo;
+import br.edu.ifpb.pps.domain.enums.ResultadoDecisao;
+import br.edu.ifpb.pps.service.dto.FiltroConsultaArtigo;
 /*
 4 - Distribuir artigos 
 5 - Processar/consultar 
-6 - dashboard
+7 - consulta avançada
 */
 
 public class MenuCoordenacao {
@@ -30,6 +38,8 @@ public class MenuCoordenacao {
     private final UsuarioService usuarioService;
     private final ComiteService comiteService;
     private final DistribuicaoArtigosService distribuicaoArtigosService;
+    private final DashboardService dashboardService;
+    private final ConsultaArtigoService consultaArtigoService;
 
     public MenuCoordenacao(
             ConsoleUI ui,
@@ -37,7 +47,9 @@ public class MenuCoordenacao {
             EventoAtual eventoAtual,
             UsuarioService usuarioService,
             ComiteService comiteService,
-            DistribuicaoArtigosService distribuicaoArtigosService
+            DistribuicaoArtigosService distribuicaoArtigosService,
+            DashboardService dashboardService,
+            ConsultaArtigoService consultaArtigoService
     ) {
         this.ui = ui;
         this.eventoService = eventoService;
@@ -45,6 +57,8 @@ public class MenuCoordenacao {
         this.usuarioService = usuarioService;
         this.comiteService = comiteService;
         this.distribuicaoArtigosService = distribuicaoArtigosService;
+        this.dashboardService = dashboardService;
+        this.consultaArtigoService = consultaArtigoService;
     }
 
     public void iniciar(Usuario usuario, Evento evento) {
@@ -57,6 +71,7 @@ public class MenuCoordenacao {
             ui.mostrarMensagem("3 - Registrar membro do comite");
             ui.mostrarMensagem("4 - Distribuir artigos");
             ui.mostrarMensagem("5 - Listar membros do comite");
+            ui.mostrarMensagem("6 - Dashboard");
             ui.mostrarMensagem("0 - Voltar");
 
             String opcao = ui.lerTexto("Escolha");
@@ -78,6 +93,9 @@ public class MenuCoordenacao {
                         break;
                     case "5":
                         listarMembros(evento);
+                        break;
+                    case "6":
+                        visualizarDashboard(evento);
                         break;
                     case "0":
                         rodando = false;
@@ -228,4 +246,136 @@ public class MenuCoordenacao {
                 ui.mostrarErro("Nivel invalido. Escolha entre 1 e 3.");
             }
         }
+
+        private void visualizarDashboard(Evento evento) {
+            ui.mostrarTitulo("Dashboard da Coordenacao");
+
+            DashboardCoordenacao dashboard = dashboardService.gerarDashboard(evento);
+
+            ui.mostrarMensagem("Artigos submetidos: " + dashboard.getTotalArtigosSubmetidos());
+            ui.mostrarMensagem("Revisores: " + dashboard.getTotalRevisores());
+            ui.mostrarMensagem("Artigos avaliados: " + dashboard.getTotalArtigosAvaliados());
+            ui.mostrarMensagem("Artigos pendentes: " + dashboard.getTotalArtigosPendentes());
+
+            ui.mostrarMensagem("");
+            ui.mostrarMensagem("Pendencias:");
+
+            if (dashboard.getPendencias().isEmpty()) {
+                ui.mostrarMensagem("Nenhuma pendencia de avaliacao.");
+            } else {
+                for (PendenciaAvaliacao pendencia : dashboard.getPendencias()) {
+                    ui.mostrarMensagem(
+                            "- " + pendencia.getTituloArtigo()
+                                    + " | Avaliador: " + pendencia.getNomeAvaliador()
+                                    + " | Email: " + pendencia.getEmailAvaliador()
+                    );
+                }
+            }
+
+            ui.pausar();
+        }
+
+private void consultarArtigos(Evento evento) {
+    ui.mostrarTitulo("Consulta Avancada de Artigos");
+
+    FiltroConsultaArtigo filtro = new FiltroConsultaArtigo();
+
+    boolean escolhendo = true;
+
+    while (escolhendo) {
+        ui.mostrarMensagem("");
+        ui.mostrarMensagem("Filtros:");
+        ui.mostrarMensagem("1 - Filtrar por area tematica");
+        ui.mostrarMensagem("2 - Filtrar por estado");
+        ui.mostrarMensagem("3 - Filtrar por resultado");
+        ui.mostrarMensagem("0 - Buscar");
+
+        String opcao = ui.lerTexto("Escolha");
+
+        switch (opcao) {
+            case "1":
+                filtro.setArea(escolherUmaAreaTematica(evento));
+                break;
+            case "2":
+                filtro.setEstado(escolherEstadoArtigo());
+                break;
+            case "3":
+                //filtro.setResultado(escolherResultadoDecisao());
+                break;
+            case "0":
+                escolhendo = false;
+                break;
+            default:
+                ui.mostrarErro("Opcao invalida.");
+        }
+    }
+
+    List<Artigo> artigos = consultaArtigoService.consultar(evento, filtro);
+
+    ui.mostrarMensagem("");
+    ui.mostrarMensagem("Resultado da consulta:");
+
+    if (artigos.isEmpty()) {
+        ui.mostrarMensagem("Nenhum artigo encontrado com os filtros aplicados.");
+    } else {
+        for (Artigo artigo : artigos) {
+            ui.mostrarMensagem(
+                    "- " + artigo.getTitulo()
+                            + " | Estado: " + artigo.getEstado().getNome()
+                            + " | Resultado: " + artigo.getResultadoDecisao()
+            );
+        }
+    }
+
+    ui.pausar();
 }
+private String escolherEstadoArtigo() {
+    while (true) {
+        ui.mostrarMensagem("");
+        ui.mostrarMensagem("Estado do artigo:");
+        ui.mostrarMensagem("1 - Submetido");
+        ui.mostrarMensagem("2 - Em revisao");
+        ui.mostrarMensagem("3 - Finalizado");
+
+        String opcao = ui.lerTexto("Escolha");
+
+        switch (opcao) {
+            case "1":
+                return "Submetido";
+            case "2":
+                return "Em revisao";
+            case "3":
+                return "Finalizado";
+            default:
+                ui.mostrarErro("Opcao invalida.");
+        }
+    }
+}
+
+private AreaTematica escolherUmaAreaTematica(Evento evento) {
+    List<AreaTematica> areas = evento.getAreasTematicas();
+
+    if (areas.isEmpty()) {
+        throw new IllegalStateException("Nenhuma area tematica cadastrada para o evento.");
+    }
+
+    while (true) {
+        ui.mostrarMensagem("");
+        ui.mostrarMensagem("Areas tematicas:");
+
+        for (int i = 0; i < areas.size(); i++) {
+            ui.mostrarMensagem((i + 1) + " - " + areas.get(i).getNome());
+        }
+
+        int opcao = ui.lerInteiro("Escolha uma area");
+
+        if (opcao >= 1 && opcao <= areas.size()) {
+            return areas.get(opcao - 1);
+        }
+
+        ui.mostrarErro("Area invalida.");
+    }
+}
+
+
+        }
