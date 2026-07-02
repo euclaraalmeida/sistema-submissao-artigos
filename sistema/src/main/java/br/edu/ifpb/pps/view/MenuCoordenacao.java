@@ -213,7 +213,7 @@ public class MenuCoordenacao {
         List<ConhecimentoAreaRevisor> conhecimentos = new ArrayList<>();
 
         for (AreaTematica area : evento.getAreasTematicas()) {
-            int nivel = escolherNivelConhecimento();
+            int nivel = escolherNivelConhecimento(area);
             conhecimentos.add(new ConhecimentoAreaRevisor(area, nivel));
         }
 
@@ -230,8 +230,9 @@ public class MenuCoordenacao {
         ui.mostrarMensagem("Area tematica cadastrada com sucesso: " + area.getNome());
         ui.pausar();
     }
-    private int escolherNivelConhecimento() {
+    private int escolherNivelConhecimento(AreaTematica area) {
         while (true) {
+                ui.mostrarMensagem("Area tematica: " + area.getNome());
                 ui.mostrarMensagem("Nivel de conhecimento:");
                 ui.mostrarMensagem("1 - Basico");
                 ui.mostrarMensagem("2 - Intermediario");
@@ -403,3 +404,4 @@ private AreaTematica escolherUmaAreaTematica(Evento evento) {
 
 
         }
+}

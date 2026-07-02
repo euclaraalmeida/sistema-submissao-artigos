@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.ifpb.pps.domain.enums.StatusRevisao;
+import br.edu.ifpb.pps.domain.model.Artigo;
 import br.edu.ifpb.pps.domain.model.AtribuicaoRevisao;
 import br.edu.ifpb.pps.domain.model.Evento;
+import br.edu.ifpb.pps.domain.model.Parecer;
 import br.edu.ifpb.pps.domain.model.Usuario;
 
 public class RevisaoRepository {
@@ -30,6 +32,30 @@ public class RevisaoRepository {
             if (atribuicao.getArtigo() != null
                     && atribuicao.getArtigo().getEvento() == evento) {
                 resultado.add(atribuicao);
+            }
+        }
+
+        return resultado;
+    }
+
+    public List<AtribuicaoRevisao> listarPorArtigo(Artigo artigo) {
+        List<AtribuicaoRevisao> resultado = new ArrayList<>();
+
+        for (AtribuicaoRevisao atribuicao : banco.getAtribuicoes()) {
+            if (atribuicao.getArtigo() == artigo) {
+                resultado.add(atribuicao);
+            }
+        }
+
+        return resultado;
+    }
+
+    public List<Parecer> listarPareceresPorArtigo(Artigo artigo) {
+        List<Parecer> resultado = new ArrayList<>();
+
+        for (AtribuicaoRevisao atribuicao : listarPorArtigo(artigo)) {
+            if (atribuicao.getParecer() != null) {
+                resultado.add(atribuicao.getParecer());
             }
         }
 

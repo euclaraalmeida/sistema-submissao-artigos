@@ -3,16 +3,21 @@ package br.edu.ifpb.pps;
 import br.edu.ifpb.pps.pattern.chain.ValidadorDistribuicao;
 import br.edu.ifpb.pps.pattern.chain.ValidadorNaoAutor;
 import br.edu.ifpb.pps.pattern.chain.ValidadorRevisorNaoRepetido;
+import br.edu.ifpb.pps.pattern.observer.EmailAutorObserver;
+import br.edu.ifpb.pps.pattern.observer.PublicadorEventos;
 import br.edu.ifpb.pps.repository.ArtigoRepository;
 import br.edu.ifpb.pps.repository.BancoDeDados;
 import br.edu.ifpb.pps.repository.EventoRepository;
 import br.edu.ifpb.pps.repository.RevisaoRepository;
 import br.edu.ifpb.pps.repository.UsuarioRepository;
 import br.edu.ifpb.pps.service.AutenticacaoService;
+import br.edu.ifpb.pps.service.CicloRevisoesService;
 import br.edu.ifpb.pps.service.ComiteService;
 import br.edu.ifpb.pps.service.ConsultaArtigoService;
 import br.edu.ifpb.pps.service.DashboardService;
 import br.edu.ifpb.pps.service.DistribuicaoArtigosService;
+import br.edu.ifpb.pps.service.EmailResultadoService;
+import br.edu.ifpb.pps.service.EmailService;
 import br.edu.ifpb.pps.service.EventoAtual;
 import br.edu.ifpb.pps.service.EventoService;
 import br.edu.ifpb.pps.service.ResultadoArtigoService;
@@ -57,11 +62,28 @@ public class App {
         SubmissaoService submissaoService = new SubmissaoService(artigoRepository, validacaoService);
 
         ResultadoArtigoService resultadoArtigoService = new ResultadoArtigoService();
+        EmailResultadoService emailResultadoService = new EmailResultadoService();
+        EmailService emailService = new EmailService();
+        PublicadorEventos publicadorEventos = new PublicadorEventos();
+
+        publicadorEventos.adicionarObservador(new EmailAutorObserver(
+                emailResultadoService,
+                emailService,
+                revisaoRepository
+        ));
+
+        CicloRevisoesService cicloRevisoesService = new CicloRevisoesService(
+                artigoRepository,
+                revisaoRepository,
+                publicadorEventos,
+                validacaoService
+        );
 
         RevisaoService revisaoService = new RevisaoService(
                 revisaoRepository,
                 resultadoArtigoService,
-                validacaoService
+                validacaoService,
+                cicloRevisoesService
         );
 
         ValidadorDistribuicao validadorDistribuicao = new ValidadorNaoAutor();

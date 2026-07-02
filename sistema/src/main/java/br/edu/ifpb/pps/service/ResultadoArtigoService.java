@@ -20,9 +20,6 @@ public class ResultadoArtigoService {
         ResultadoDecisao resultado = calcular(artigo, atribuicoes);
         artigo.finalizar(resultado);
 
-        // Observer: futuramente, quando todos os artigos do evento estiverem finalizados,
-        // publicar evento de conclusao do ciclo de revisoes para permitir notificacao em massa aos autores.
-
         return true;
     }
 
