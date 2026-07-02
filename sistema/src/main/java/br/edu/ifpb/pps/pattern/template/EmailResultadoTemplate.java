@@ -44,9 +44,13 @@ public abstract class EmailResultadoTemplate {
 
     protected String montarAssinatura(Artigo artigo) {
         String nomeEvento = artigo.getEvento() == null ? "evento" : artigo.getEvento().getNome();
+        Usuario coordenador = artigo.getEvento() == null ? null : artigo.getEvento().getCoordenador();
 
-        // O RF09 usa o nome da coordenadora na assinatura.
-        // O modelo atual ainda nao possui o coordenador associado diretamente ao evento.
+        if (coordenador != null && coordenador.getNome() != null && !coordenador.getNome().trim().isEmpty()) {
+            return "Atenciosamente,\n\n" + coordenador.getNome()
+                    + "\nCoordenacao do Comite de Programa do " + nomeEvento;
+        }
+
         return "Atenciosamente,\n\nCoordenacao do Comite de Programa do " + nomeEvento;
     }
 

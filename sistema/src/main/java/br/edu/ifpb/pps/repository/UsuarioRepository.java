@@ -20,9 +20,11 @@ public class UsuarioRepository {
     }
 
     public Usuario buscarPorEmail(String email) {
+        String emailNormalizado = email == null ? null : email.trim();
+
         for (Usuario usuario : banco.getUsuarios()) {
             if (usuario.getEmail() != null
-                    && usuario.getEmail().equalsIgnoreCase(email)) {
+                    && usuario.getEmail().equalsIgnoreCase(emailNormalizado)) {
                 return usuario;
             }
         }

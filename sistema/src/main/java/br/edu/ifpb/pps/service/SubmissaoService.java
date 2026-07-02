@@ -1,7 +1,9 @@
 package br.edu.ifpb.pps.service;
 
-import java.time.LocalDate;
+
+import java.util.Collections;
 import java.util.List;
+import java.time.LocalDate;
 
 import br.edu.ifpb.pps.domain.enums.TipoAutoria;
 import br.edu.ifpb.pps.domain.model.AreaTematica;
@@ -28,6 +30,17 @@ public class SubmissaoService {
             String resumo,
             List<AreaTematica> areas
     ) {
+        return submeterArtigo(usuario, evento, titulo, resumo, areas, Collections.emptyList());
+    }
+
+    public Artigo submeterArtigo(
+            Usuario usuario,
+            Evento evento,
+            String titulo,
+            String resumo,
+            List<AreaTematica> areas,
+            List<Usuario> coautores
+    ) {
         validacaoService.objetoObrigatorio(usuario, "Usuario");
         validacaoService.objetoObrigatorio(evento, "Evento");
         validacaoService.textoObrigatorio(titulo, "Titulo");
@@ -46,6 +59,8 @@ public class SubmissaoService {
 
         Autoria autoriaPrincipal = criarAutoriaPrincipal(usuario, artigo);
         artigo.adicionarAutor(autoriaPrincipal);
+
+        adicionarCoautores(artigo, usuario, coautores);
 
         artigoRepository.salvar(artigo);
 
@@ -79,6 +94,33 @@ public class SubmissaoService {
         }
 }
 
-    // metodo para adicionar coAutor
-    
+    private void adicionarCoautores(Artigo artigo, Usuario autorPrincipal, List<Usuario> coautores) {
+        if (coautores == null) {
+            return;
+        }
+
+        for (Usuario coautor : coautores) {
+            validacaoService.objetoObrigatorio(coautor, "Coautor");
+
+            if (coautor == autorPrincipal || artigoJaPossuiAutor(artigo, coautor)) {
+                throw new IllegalArgumentException("Autor duplicado no artigo: " + coautor.getEmail());
+            }
+
+            Autoria autoria = new Autoria();
+            autoria.setUser(coautor);
+            autoria.setTipoAutoria(TipoAutoria.COAUTOR);
+            autoria.setArtigo(artigo);
+            artigo.adicionarAutor(autoria);
+        }
+    }
+
+    private boolean artigoJaPossuiAutor(Artigo artigo, Usuario usuario) {
+        for (Autoria autoria : artigo.getAutores()) {
+            if (autoria.getUser() == usuario) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
