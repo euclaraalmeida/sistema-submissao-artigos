@@ -24,7 +24,7 @@ O objetivo principal do projeto e demonstrar a aplicacao pratica de padroes de p
 ## Tecnologias
 
 - Java 8+
-- Maven
+- Maven Wrapper / Maven
 - Jakarta Mail 2.0.1
 - JUnit 4
 - PlantUML para diagrama de classes
@@ -210,37 +210,61 @@ O template define a estrutura geral do e-mail: saudacao, mensagem principal, ass
 Instale:
 
 - Java 8 ou superior
-- Maven
+
+O Maven nao precisa estar instalado para a execucao principal, porque o projeto inclui Maven Wrapper (`mvnw` e `mvnw.cmd`). Na primeira execucao, o wrapper baixa automaticamente a versao do Maven configurada no projeto.
 
 Verifique:
 
 ```bash
 java -version
-mvn -version
 ```
 
 ### Clonar o repositorio
 
 ```bash
 git clone https://github.com/euclaraalmeida/sistema-submissao-artigos.git
-cd sistema-submissao-artigos
-git checkout feat/observer-email
-cd sistema
+cd sistema-submissao-artigos/sistema
 ```
 
-### Compilar
+### Rodar com Maven Wrapper (recomendado)
+
+No Windows PowerShell:
+
+```powershell
+.\mvnw.cmd clean compile exec:java "-Dexec.mainClass=br.edu.ifpb.pps.App"
+```
+
+No Linux/Mac/Git Bash:
 
 ```bash
-mvn clean compile
+./mvnw clean compile exec:java -Dexec.mainClass="br.edu.ifpb.pps.App"
 ```
 
-### Rodar
+No Linux/Mac, se necessario, libere a execucao do arquivo:
 
 ```bash
-mvn exec:java -Dexec.mainClass="br.edu.ifpb.pps.App"
+chmod +x mvnw
 ```
 
-Caso o plugin `exec-maven-plugin` nao esteja configurado no `pom.xml`, use:
+Se no Windows aparecer a mensagem `'powershell' nao e reconhecido como um comando interno ou externo`, adicione o PowerShell ao `PATH` da sessao antes de rodar:
+
+```powershell
+$env:PATH += ";C:\Windows\System32\WindowsPowerShell\v1.0"
+```
+
+### Rodar com Maven instalado (opcional)
+
+```bash
+mvn clean compile exec:java -Dexec.mainClass="br.edu.ifpb.pps.App"
+```
+
+No PowerShell, se usar `mvn`, tambem pode ser necessario colocar o parametro `-Dexec.mainClass` entre aspas:
+
+```powershell
+mvn clean compile exec:java "-Dexec.mainClass=br.edu.ifpb.pps.App"
+```
+
+### Alternativa manual
 
 ```bash
 mvn clean package
@@ -285,7 +309,7 @@ $env:SMTP_USER="seuemail@gmail.com"
 $env:SMTP_PASSWORD="sua_senha_de_app"
 $env:SMTP_FROM="seuemail@gmail.com"
 
-mvn exec:java -Dexec.mainClass="br.edu.ifpb.pps.App"
+.\mvnw.cmd clean compile exec:java "-Dexec.mainClass=br.edu.ifpb.pps.App"
 ```
 
 ### Envio real via Gmail no Linux/Mac/Git Bash
@@ -297,7 +321,7 @@ export SMTP_USER=seuemail@gmail.com
 export SMTP_PASSWORD=sua_senha_de_app
 export SMTP_FROM=seuemail@gmail.com
 
-mvn exec:java -Dexec.mainClass="br.edu.ifpb.pps.App"
+./mvnw clean compile exec:java -Dexec.mainClass="br.edu.ifpb.pps.App"
 ```
 
 Observacao: para Gmail, `SMTP_PASSWORD` deve ser uma senha de app, nao a senha normal da conta.
