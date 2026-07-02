@@ -1,0 +1,106 @@
+@startuml
+title Sistema de Submissao e Avaliacao de Artigos Cientificos
+
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+
+package "domain.model" {
+  class Usuario
+  class Evento
+  class AreaTematica
+  class Artigo
+  class Autoria
+  class MembroComite
+  class ConhecimentoAreaRevisor
+  class AtribuicaoRevisao
+  class Parecer
+}
+
+package "domain.enums" {
+  enum CategoriaSubmissao
+  enum TipoAutoria
+  enum ResultadoDecisao
+  enum StatusRevisao
+  enum Veredito
+}
+
+package "repository" {
+  class BancoDeDados
+  class UsuarioRepository
+  class EventoRepository
+  class ArtigoRepository
+  class RevisaoRepository
+}
+
+package "service" {
+  class UsuarioService
+  class AutenticacaoService
+  class EventoService
+  class EventoAtual
+  class ComiteService
+  class SubmissaoService
+  class DistribuicaoArtigosService
+  class RevisaoService
+  class ResultadoArtigoService
+  class DashboardService <<Facade>>
+  class ConsultaArtigoService
+  class CicloRevisoesService
+  class EmailService
+  class EmailResultadoService
+}
+
+package "view" {
+  class ConsoleUI
+  class MenuInicial
+  class MenuPrincipal
+  class MenuAutor
+  class MenuRevisor
+  class MenuCoordenacao
+  class MenuConsultaArtigo
+  class MenuCriacaoEvento
+}
+
+Usuario "1" -- "0..*" Autoria
+Artigo "1" -- "1..*" Autoria
+Evento "1" -- "0..*" AreaTematica
+Evento "1" -- "0..*" MembroComite
+Evento "1" -- "0..*" Artigo
+MembroComite "1" -- "1" Usuario
+MembroComite "1" -- "0..*" ConhecimentoAreaRevisor
+ConhecimentoAreaRevisor "*" -- "1" AreaTematica
+Artigo "1" -- "0..*" AtribuicaoRevisao
+AtribuicaoRevisao "*" -- "1" MembroComite
+AtribuicaoRevisao "1" -- "0..1" Parecer
+
+UsuarioRepository --> BancoDeDados
+EventoRepository --> BancoDeDados
+ArtigoRepository --> BancoDeDados
+RevisaoRepository --> BancoDeDados
+
+MenuInicial --> UsuarioService
+MenuInicial --> AutenticacaoService
+MenuInicial --> EventoAtual
+MenuPrincipal --> MenuAutor
+MenuPrincipal --> MenuRevisor
+MenuPrincipal --> MenuCoordenacao
+MenuCoordenacao --> EventoService
+MenuCoordenacao --> ComiteService
+MenuCoordenacao --> DashboardService
+MenuCoordenacao --> DistribuicaoArtigosService
+MenuCoordenacao --> MenuConsultaArtigo
+MenuConsultaArtigo --> ConsultaArtigoService
+
+UsuarioService --> UsuarioRepository
+AutenticacaoService --> UsuarioRepository
+EventoService --> EventoRepository
+EventoService --> ArtigoRepository
+EventoService --> RevisaoRepository
+SubmissaoService --> ArtigoRepository
+DashboardService --> ArtigoRepository
+DashboardService --> RevisaoRepository
+DashboardService --> ComiteService
+ConsultaArtigoService --> ArtigoRepository
+ConsultaArtigoService --> RevisaoRepository
+ConsultaArtigoService --> ComiteService
+
+@enduml

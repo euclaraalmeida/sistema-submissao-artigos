@@ -1,0 +1,118 @@
+@startuml
+title Camadas da Aplicacao - Menus, Services e Repositories
+
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+
+package "view" {
+  class ConsoleUI
+  class MenuInicial
+  class MenuCriacaoEvento
+  class MenuPrincipal
+  class MenuAutor
+  class MenuRevisor
+  class MenuCoordenacao
+  class MenuConsultaArtigo
+}
+
+package "service" {
+  class UsuarioService
+  class AutenticacaoService
+  class EventoService
+  class EventoAtual
+  class ComiteService
+  class SubmissaoService
+  class DistribuicaoArtigosService
+  class RevisaoService
+  class ResultadoArtigoService
+  class DashboardService <<Facade>>
+  class ConsultaArtigoService
+  class CicloRevisoesService
+  class EmailService
+  class EmailResultadoService
+  class ValidacaoGenericaService
+}
+
+package "repository" {
+  class BancoDeDados
+  class UsuarioRepository
+  class EventoRepository
+  class ArtigoRepository
+  class RevisaoRepository
+}
+
+package "infra" {
+  class CargaDeDados
+}
+
+MenuInicial --> ConsoleUI
+MenuInicial --> UsuarioService
+MenuInicial --> AutenticacaoService
+MenuInicial --> EventoAtual
+MenuInicial --> MenuPrincipal
+MenuInicial --> MenuCriacaoEvento
+
+MenuCriacaoEvento --> ConsoleUI
+MenuCriacaoEvento --> EventoService
+MenuCriacaoEvento --> EventoAtual
+MenuCriacaoEvento --> MenuPrincipal
+
+MenuPrincipal --> ConsoleUI
+MenuPrincipal --> ComiteService
+MenuPrincipal --> MenuAutor
+MenuPrincipal --> MenuRevisor
+MenuPrincipal --> MenuCoordenacao
+
+MenuAutor --> ConsoleUI
+MenuAutor --> SubmissaoService
+
+MenuRevisor --> ConsoleUI
+MenuRevisor --> RevisaoService
+
+MenuCoordenacao --> ConsoleUI
+MenuCoordenacao --> EventoService
+MenuCoordenacao --> EventoAtual
+MenuCoordenacao --> UsuarioService
+MenuCoordenacao --> ComiteService
+MenuCoordenacao --> DistribuicaoArtigosService
+MenuCoordenacao --> DashboardService
+MenuCoordenacao --> MenuConsultaArtigo
+
+MenuConsultaArtigo --> ConsoleUI
+MenuConsultaArtigo --> ConsultaArtigoService
+
+CargaDeDados --> UsuarioService
+CargaDeDados --> EventoService
+CargaDeDados --> EventoAtual
+CargaDeDados --> ComiteService
+CargaDeDados --> SubmissaoService
+
+UsuarioService --> UsuarioRepository
+AutenticacaoService --> UsuarioRepository
+EventoService --> EventoRepository
+EventoService --> ArtigoRepository
+EventoService --> RevisaoRepository
+ComiteService --> ValidacaoGenericaService
+SubmissaoService --> ArtigoRepository
+DistribuicaoArtigosService --> ArtigoRepository
+DistribuicaoArtigosService --> RevisaoRepository
+RevisaoService --> RevisaoRepository
+RevisaoService --> ResultadoArtigoService
+RevisaoService --> CicloRevisoesService
+DashboardService --> ArtigoRepository
+DashboardService --> RevisaoRepository
+DashboardService --> ComiteService
+ConsultaArtigoService --> ArtigoRepository
+ConsultaArtigoService --> RevisaoRepository
+ConsultaArtigoService --> ComiteService
+CicloRevisoesService --> ArtigoRepository
+CicloRevisoesService --> RevisaoRepository
+CicloRevisoesService --> EmailService
+EmailResultadoService --> EmailService
+
+UsuarioRepository --> BancoDeDados
+EventoRepository --> BancoDeDados
+ArtigoRepository --> BancoDeDados
+RevisaoRepository --> BancoDeDados
+
+@enduml

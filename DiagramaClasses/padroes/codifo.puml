@@ -1,0 +1,130 @@
+@startuml
+title Padroes de Projeto - Sistema de Artigos
+
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+
+package "State" {
+  interface EstadoArtigo {
+    +distribuirParaRevisao(artigo)
+    +finalizar(artigo, resultado)
+    +getNome()
+  }
+
+  class ArtigoSubmetido
+  class ArtigoEmRevisao
+  class ArtigoFinalizado
+  class Artigo
+
+  EstadoArtigo <|.. ArtigoSubmetido
+  EstadoArtigo <|.. ArtigoEmRevisao
+  EstadoArtigo <|.. ArtigoFinalizado
+
+  Artigo --> EstadoArtigo
+}
+
+package "Chain of Responsibility" {
+  abstract class ValidadorDistribuicao {
+    -proximo: ValidadorDistribuicao
+    +ligarCom(proximo)
+    +validar(artigo, revisor, atribuicoes)
+    #validarRegra(artigo, revisor, atribuicoes)
+  }
+
+  class ValidadorNaoAutor
+  class ValidadorRevisorNaoRepetido
+  class DistribuicaoArtigosService
+
+  ValidadorDistribuicao <|-- ValidadorNaoAutor
+  ValidadorDistribuicao <|-- ValidadorRevisorNaoRepetido
+  ValidadorDistribuicao --> ValidadorDistribuicao : proximo
+  DistribuicaoArtigosService --> ValidadorDistribuicao
+}
+
+package "Observer" {
+  interface EventoSistema
+  interface ObservadorEvento {
+    +aceita(evento)
+    +atualizar(evento)
+  }
+
+  class PublicadorEventos {
+    +adicionarObservador(observador)
+    +publicar(evento)
+  }
+
+  class CicloRevisoesConcluidoEvent
+  class EmailAutorObserver
+  class CicloRevisoesService
+
+  EventoSistema <|.. CicloRevisoesConcluidoEvent
+  ObservadorEvento <|.. EmailAutorObserver
+  PublicadorEventos --> ObservadorEvento
+  CicloRevisoesService --> PublicadorEventos
+}
+
+package "Template Method" {
+  abstract class EmailResultadoTemplate {
+    +gerar(artigo, pareceres)
+    #mensagemPrincipal(artigo)
+  }
+
+  class EmailAceiteTemplate
+  class EmailRejeicaoTemplate
+  class EmailResultadoService
+
+  EmailResultadoTemplate <|-- EmailAceiteTemplate
+  EmailResultadoTemplate <|-- EmailRejeicaoTemplate
+  EmailResultadoService --> EmailResultadoTemplate
+}
+
+package "Facade" {
+  class DashboardService <<Facade>>
+  class DashboardCoordenacao
+  class PendenciaAvaliacao
+
+  DashboardService --> DashboardCoordenacao
+  DashboardCoordenacao --> PendenciaAvaliacao
+}
+
+package "Decorator" {
+  interface BuscaArtigos {
+    +buscar()
+  }
+
+  class BuscaTodosArtigos
+  class FiltroArtigoDecorator {
+    -busca: BuscaArtigos
+    +buscar()
+  }
+
+  class FiltroPorArea
+  class FiltroPorEstado
+  class FiltroPorResultado
+  class FiltroPorAvaliador
+  class ConsultaArtigoService
+
+  BuscaArtigos <|.. BuscaTodosArtigos
+  BuscaArtigos <|.. FiltroArtigoDecorator
+  FiltroArtigoDecorator --> BuscaArtigos
+  FiltroArtigoDecorator <|-- FiltroPorArea
+  FiltroArtigoDecorator <|-- FiltroPorEstado
+  FiltroArtigoDecorator <|-- FiltroPorResultado
+  FiltroArtigoDecorator <|-- FiltroPorAvaliador
+  ConsultaArtigoService --> BuscaArtigos
+}
+
+package "Repository" {
+  class BancoDeDados
+  class UsuarioRepository
+  class EventoRepository
+  class ArtigoRepository
+  class RevisaoRepository
+
+  UsuarioRepository --> BancoDeDados
+  EventoRepository --> BancoDeDados
+  ArtigoRepository --> BancoDeDados
+  RevisaoRepository --> BancoDeDados
+}
+
+@enduml
