@@ -11,7 +11,7 @@ public class Evento {
     private String nome;
     private String cidade;
     private LocalDate dataInicio;
-    private LocalDate dataFim;
+    private LocalDate dataFim; // ultimo prazo para submeter
     private CategoriaSubmissao categoriaSubmissao;
     private boolean emailsResultadoAutoresEnviados;
 

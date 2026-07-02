@@ -1,5 +1,6 @@
 package br.edu.ifpb.pps.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import br.edu.ifpb.pps.domain.enums.TipoAutoria;
@@ -9,6 +10,7 @@ import br.edu.ifpb.pps.domain.model.Autoria;
 import br.edu.ifpb.pps.domain.model.Evento;
 import br.edu.ifpb.pps.domain.model.Usuario;
 import br.edu.ifpb.pps.repository.ArtigoRepository;
+import java.time.LocalDate;
 
 public class SubmissaoService {
     private final ArtigoRepository artigoRepository;
@@ -31,6 +33,7 @@ public class SubmissaoService {
         validacaoService.textoObrigatorio(titulo, "Titulo");
         validacaoService.textoObrigatorio(resumo, "Resumo");
         validacaoService.listaObrigatoria(areas, "Areas tematicas");
+        validarPrazoSubmissao(evento);
 
         Artigo artigo = new Artigo();
         artigo.setTitulo(titulo);
@@ -64,6 +67,17 @@ public class SubmissaoService {
 
         return autoria;
     }
+    private void validarPrazoSubmissao(Evento evento) {
+        LocalDate hoje = LocalDate.now();
+
+        if (evento.getDataFim() == null) {
+            throw new IllegalStateException("Evento nao possui data final definida.");
+        }
+
+        if (hoje.isAfter(evento.getDataFim())) {
+            throw new IllegalStateException("Prazo de submissao encerrado.");
+        }
+}
 
     // metodo para adicionar coAutor
     

@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.edu.ifpb.pps.domain.model.Artigo;
 import br.edu.ifpb.pps.domain.model.Evento;
+import br.edu.ifpb.pps.domain.model.MembroComite;
 import br.edu.ifpb.pps.pattern.Decorator.BuscaArtigos;
 import br.edu.ifpb.pps.pattern.Decorator.BuscaTodosArtigos;
 import br.edu.ifpb.pps.pattern.Decorator.FiltroPorArea;
@@ -18,15 +19,18 @@ public class ConsultaArtigoService {
     private final ArtigoRepository artigoRepository;
     private final RevisaoRepository revisaoRepository;
     private final ValidacaoGenericaService validacaoService;
+    private final ComiteService comiteService;
 
     public ConsultaArtigoService(
             ArtigoRepository artigoRepository,
             RevisaoRepository revisaoRepository,
-            ValidacaoGenericaService validacaoService
+            ValidacaoGenericaService validacaoService,
+            ComiteService comiteService
     ) {
         this.artigoRepository = artigoRepository;
         this.revisaoRepository = revisaoRepository;
         this.validacaoService = validacaoService;
+         this.comiteService = comiteService;
     }
 
     public List<Artigo> consultar(Evento evento, FiltroConsultaArtigo filtro) {
@@ -43,7 +47,6 @@ public class ConsultaArtigoService {
             busca = new FiltroPorEstado(busca, filtro.getEstado());
         }
 
-        /* // depois que  agnt implementar ambas as classes
         if (filtro.temResultado()) {
             busca = new FiltroPorResultado(busca, filtro.getResultado());
         }
@@ -54,8 +57,13 @@ public class ConsultaArtigoService {
                     filtro.getAvaliador(),
                     revisaoRepository
             );
-        }*/
+        }
 
         return busca.buscar();
     }
+
+    public List<MembroComite> listarAvaliadores(Evento evento) {
+        validacaoService.objetoObrigatorio(evento, "Evento");
+        return comiteService.listarMembros(evento);
+}
 }
