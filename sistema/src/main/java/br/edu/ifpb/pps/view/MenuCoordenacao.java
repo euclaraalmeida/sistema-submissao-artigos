@@ -89,7 +89,7 @@ public class MenuCoordenacao {
                         registrarMembroComConhecimentos(evento) ;                       
                         break;
                     case "4":
-                        //distribuirArtigos(evento);
+                        distribuirArtigos(evento);
                         break;
                     case "5":
                         listarMembros(evento);
@@ -352,6 +352,30 @@ private String escolherEstadoArtigo() {
     }
 }
 
+private void distribuirArtigos(Evento evento) {
+    ui.mostrarTitulo("Distribuir Artigos");
+
+    List<AtribuicaoRevisao> atribuicoes = distribuicaoArtigosService.distribuir(evento);
+
+    if (atribuicoes.isEmpty()) {
+        ui.mostrarMensagem("Nenhuma nova atribuicao foi criada.");
+        ui.pausar();
+        return;
+    }
+
+    ui.mostrarMensagem("Distribuicao realizada com sucesso.");
+    ui.mostrarMensagem("Atribuicoes criadas: " + atribuicoes.size());
+
+    for (AtribuicaoRevisao atribuicao : atribuicoes) {
+        ui.mostrarMensagem(
+                "- Artigo: " + atribuicao.getArtigo().getTitulo()
+                        + " | Revisor: " + atribuicao.getRevisor().getUsuario().getNome()
+                        + " | Status: " + atribuicao.getStatus()
+        );
+    }
+
+    ui.pausar();
+}
 private AreaTematica escolherUmaAreaTematica(Evento evento) {
     List<AreaTematica> areas = evento.getAreasTematicas();
 
