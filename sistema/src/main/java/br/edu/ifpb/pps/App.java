@@ -1,5 +1,6 @@
 package br.edu.ifpb.pps;
 
+import br.edu.ifpb.pps.infra.CargaDeDados;
 import br.edu.ifpb.pps.pattern.chain.ValidadorDistribuicao;
 import br.edu.ifpb.pps.pattern.chain.ValidadorNaoAutor;
 import br.edu.ifpb.pps.pattern.chain.ValidadorRevisorNaoRepetido;
@@ -25,10 +26,9 @@ import br.edu.ifpb.pps.service.RevisaoService;
 import br.edu.ifpb.pps.service.SubmissaoService;
 import br.edu.ifpb.pps.service.UsuarioService;
 import br.edu.ifpb.pps.service.ValidacaoGenericaService;
-import br.edu.ifpb.pps.service.DashboardService;
-import br.edu.ifpb.pps.service.dto.DashboardCoordenacao;
 import br.edu.ifpb.pps.view.ConsoleUI;
 import br.edu.ifpb.pps.view.MenuAutor;
+import br.edu.ifpb.pps.view.MenuConsultaArtigo;
 import br.edu.ifpb.pps.view.MenuCoordenacao;
 import br.edu.ifpb.pps.view.MenuCriacaoEvento;
 import br.edu.ifpb.pps.view.MenuInicial;
@@ -64,7 +64,7 @@ public class App {
         ResultadoArtigoService resultadoArtigoService = new ResultadoArtigoService();
         EmailResultadoService emailResultadoService = new EmailResultadoService();
         EmailService emailService = new EmailService();
-        
+
         PublicadorEventos publicadorEventos = new PublicadorEventos();
 
         publicadorEventos.adicionarObservador(new EmailAutorObserver(
@@ -100,12 +100,17 @@ public class App {
         ConsultaArtigoService consultaArtigoService = new ConsultaArtigoService(
         artigoRepository,
         revisaoRepository,
-        validacaoService
+        validacaoService,
+        comiteService
 );
         ConsoleUI ui = new ConsoleUI();
 
         MenuAutor menuAutor = new MenuAutor(ui, submissaoService);
         MenuRevisor menuRevisor = new MenuRevisor(ui, revisaoService);
+        MenuConsultaArtigo menuConsultaArtigo = new MenuConsultaArtigo(
+        ui,
+        consultaArtigoService
+);
 
         MenuCoordenacao menuCoordenacao = new MenuCoordenacao(
                 ui,
@@ -115,7 +120,7 @@ public class App {
                 comiteService,
                 distribuicaoArtigosService,
                 dashboardService,
-                consultaArtigoService
+                menuConsultaArtigo
         );
 
         MenuPrincipal menuPrincipal = new MenuPrincipal(
@@ -142,6 +147,20 @@ public class App {
                 menuCriacaoEvento
         );
 
+        CargaDeDados cargaDeDados = new CargaDeDados(
+                        usuarioService,
+                        eventoService,
+                        eventoAtual,
+                        comiteService,
+                        submissaoService
+                );
+
+                try {
+                cargaDeDados.carregar();
+                ui.mostrarMensagem("Dados carregados dos arquivos CSV.");
+                } catch (Exception e) {
+                ui.mostrarErro(e.getMessage());
+                }
 
         menuInicial.iniciar();
     }

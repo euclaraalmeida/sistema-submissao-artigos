@@ -1,0 +1,7 @@
+nome;email;senha;instituicao;coordenador
+Clara;clara@email.com;123;IFPB;true
+Ana;ana@email.com;123;UFPB;false
+Lucas;lucas@email.com;123;IFPB;false
+Bruno;bruno@email.com;123;IFPB;false
+Mariana;marianasarinho14@gmail.com;123;UFCG;false
+Arthur;arthur@email.com;123;UFPE;false
