@@ -13,6 +13,7 @@ public class Evento {
     private LocalDate dataInicio;
     private LocalDate dataFim;
     private CategoriaSubmissao categoriaSubmissao;
+    private Usuario coordenador;
     private boolean emailsResultadoAutoresEnviados;
 
     private List<AreaTematica> areasTematicas = new ArrayList<>();
@@ -64,6 +65,14 @@ public class Evento {
 
     public void setCategoriaSubmissao(CategoriaSubmissao categoriaSubmissao) {
         this.categoriaSubmissao = categoriaSubmissao;
+    }
+
+    public Usuario getCoordenador() {
+        return coordenador;
+    }
+
+    public void setCoordenador(Usuario coordenador) {
+        this.coordenador = coordenador;
     }
 
     public boolean isEmailsResultadoAutoresEnviados() {

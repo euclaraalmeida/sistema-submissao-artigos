@@ -5,17 +5,21 @@ import java.util.List;
 
 import br.edu.ifpb.pps.domain.model.AreaTematica;
 import br.edu.ifpb.pps.domain.model.Artigo;
+import br.edu.ifpb.pps.domain.model.Autoria;
 import br.edu.ifpb.pps.domain.model.Evento;
 import br.edu.ifpb.pps.domain.model.Usuario;
 import br.edu.ifpb.pps.service.SubmissaoService;
+import br.edu.ifpb.pps.service.UsuarioService;
 
 public class MenuAutor {
     private final ConsoleUI ui;
     private final SubmissaoService submissaoService;
+    private final UsuarioService usuarioService;
 
-    public MenuAutor(ConsoleUI ui, SubmissaoService submissaoService) {
+    public MenuAutor(ConsoleUI ui, SubmissaoService submissaoService, UsuarioService usuarioService) {
         this.ui = ui;
         this.submissaoService = submissaoService;
+        this.usuarioService = usuarioService;
     }
 
     public void iniciar(Usuario usuario, Evento evento) {
@@ -58,13 +62,15 @@ public class MenuAutor {
         String resumo = ui.lerTextoObrigatorio("Resumo");
 
         List<AreaTematica> areasSelecionadas = escolherAreasTematicas(evento);
+        List<Usuario> coautores = escolherCoautores(usuario);
 
         Artigo artigo = submissaoService.submeterArtigo(
                 usuario,
                 evento,
                 titulo,
                 resumo,
-                areasSelecionadas
+                areasSelecionadas,
+                coautores
         );
 
         ui.mostrarMensagem("Artigo submetido com sucesso: " + artigo.getTitulo());
@@ -89,6 +95,7 @@ public class MenuAutor {
                     (i + 1) + " - " + artigo.getTitulo()
                             + " | Estado: " + artigo.getEstado().getNome()
                             + " | Resultado: " + artigo.getResultadoDecisao()
+                            + " | Autores: " + formatarAutores(artigo)
             );
         }
 
@@ -139,5 +146,65 @@ public class MenuAutor {
         }
 
         return selecionadas;
+    }
+
+    private List<Usuario> escolherCoautores(Usuario autorPrincipal) {
+        List<Usuario> coautores = new ArrayList<>();
+
+        boolean escolhendo = true;
+
+        while (escolhendo) {
+            ui.mostrarMensagem("");
+            ui.mostrarMensagem("Coautores:");
+            ui.mostrarMensagem("Informe o e-mail de um usuario cadastrado ou deixe em branco para finalizar.");
+
+            String email = ui.lerTexto("Email do coautor");
+
+            if (email == null || email.trim().isEmpty()) {
+                escolhendo = false;
+                continue;
+            }
+
+            Usuario coautor;
+
+            try {
+                coautor = usuarioService.buscarPorEmail(email);
+            } catch (IllegalArgumentException e) {
+                ui.mostrarErro(e.getMessage());
+                continue;
+            }
+
+            if (coautor == null) {
+                ui.mostrarErro("Usuario nao encontrado.");
+            } else if (coautor == autorPrincipal || coautores.contains(coautor)) {
+                ui.mostrarErro("Coautor ja informado para este artigo.");
+            } else {
+                coautores.add(coautor);
+                ui.mostrarMensagem("Coautor adicionado: " + coautor.getNome());
+            }
+        }
+
+        return coautores;
+    }
+
+    private String formatarAutores(Artigo artigo) {
+        StringBuilder texto = new StringBuilder();
+        List<Autoria> autores = artigo.getAutores();
+
+        for (int i = 0; i < autores.size(); i++) {
+            Usuario usuario = autores.get(i).getUser();
+
+            if (i > 0) {
+                texto.append(", ");
+            }
+
+            texto.append(usuario == null ? "sem usuario" : usuario.getNome());
+        }
+
+        if (texto.length() == 0) {
+            return "sem autores";
+        }
+
+        return texto.toString();
     }
 }

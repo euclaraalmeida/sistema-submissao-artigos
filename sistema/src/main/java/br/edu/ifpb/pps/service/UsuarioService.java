@@ -22,7 +22,7 @@ public class UsuarioService {
             boolean coordenador
     ) {
         validacaoService.textoObrigatorio(nome, "Nome");
-        validacaoService.textoObrigatorio(email, "Email");
+        validacaoService.emailValido(email, "Email");
         validacaoService.textoObrigatorio(senha, "Senha");
         validacaoService.textoObrigatorio(instituicao, "Instituicao");
 
@@ -32,7 +32,7 @@ public class UsuarioService {
 
         Usuario usuario = new Usuario();
         usuario.setNome(nome);
-        usuario.setEmail(email);
+        usuario.setEmail(email.trim());
         usuario.setSenha(senha);
         usuario.setInstituicao(instituicao);
         usuario.setCoordenador(coordenador);
@@ -43,8 +43,8 @@ public class UsuarioService {
     }
 
     public Usuario buscarPorEmail(String email) {
-        validacaoService.textoObrigatorio(email, "Email");
-        return usuarioRepository.buscarPorEmail(email);
+        validacaoService.emailValido(email, "Email");
+        return usuarioRepository.buscarPorEmail(email.trim());
     }
 
     public List<Usuario> listarUsuarios() {

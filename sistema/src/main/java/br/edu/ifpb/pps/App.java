@@ -104,7 +104,7 @@ public class App {
 );
         ConsoleUI ui = new ConsoleUI();
 
-        MenuAutor menuAutor = new MenuAutor(ui, submissaoService);
+        MenuAutor menuAutor = new MenuAutor(ui, submissaoService, usuarioService);
         MenuRevisor menuRevisor = new MenuRevisor(ui, revisaoService);
 
         MenuCoordenacao menuCoordenacao = new MenuCoordenacao(

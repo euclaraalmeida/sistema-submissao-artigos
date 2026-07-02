@@ -81,7 +81,7 @@ public class MenuCoordenacao {
             try {
                 switch (opcao) {
                     case "1":
-                        iniciarNovoEvento();
+                        iniciarNovoEvento(usuario);
                         evento = eventoAtual.getEventoAtual();
                         break;
                     case "2":
@@ -116,7 +116,7 @@ public class MenuCoordenacao {
         }
     }
 
-    private void iniciarNovoEvento() {
+    private void iniciarNovoEvento(Usuario usuario) {
         ui.mostrarTitulo("Encerrar evento atual e iniciar novo evento");
 
         String nome = ui.lerTextoObrigatorio("Nome do evento");
@@ -126,6 +126,7 @@ public class MenuCoordenacao {
         CategoriaSubmissao categoria = escolherCategoria();
 
         Evento evento = eventoService.iniciarNovoEvento(
+                usuario,
                 nome,
                 cidade,
                 dataInicio,

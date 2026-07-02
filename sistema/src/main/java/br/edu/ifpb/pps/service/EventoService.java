@@ -3,6 +3,7 @@ package br.edu.ifpb.pps.service;
 import br.edu.ifpb.pps.domain.enums.CategoriaSubmissao;
 import br.edu.ifpb.pps.domain.model.AreaTematica;
 import br.edu.ifpb.pps.domain.model.Evento;
+import br.edu.ifpb.pps.domain.model.Usuario;
 import br.edu.ifpb.pps.repository.ArtigoRepository;
 import br.edu.ifpb.pps.repository.EventoRepository;
 import br.edu.ifpb.pps.repository.RevisaoRepository;
@@ -30,6 +31,7 @@ public class EventoService {
     }
 
     public Evento iniciarNovoEvento(
+            Usuario coordenador,
             String nome,
             String cidade,
             java.time.LocalDate dataInicio,
@@ -54,11 +56,22 @@ public class EventoService {
         evento.setDataInicio(dataInicio);
         evento.setDataFim(dataFim);
         evento.setCategoriaSubmissao(categoriaSubmissao);
+        evento.setCoordenador(coordenador);
 
         eventoRepository.salvar(evento);
         eventoAtual.definirEventoAtual(evento);
 
         return evento;
+    }
+
+    public Evento iniciarNovoEvento(
+            String nome,
+            String cidade,
+            java.time.LocalDate dataInicio,
+            java.time.LocalDate dataFim,
+            CategoriaSubmissao categoriaSubmissao
+    ) {
+        return iniciarNovoEvento(null, nome, cidade, dataInicio, dataFim, categoriaSubmissao);
     }
 
     private void limparDadosDoEventoAnterior() {
@@ -67,7 +80,6 @@ public class EventoService {
         revisaoRepository.limpar();
         eventoAtual.limparEventoAtual();
     }
-
 
      public AreaTematica cadastrarAreaTematica(Evento evento, String nome) {
         validacaoService.objetoObrigatorio(evento, "Evento");
