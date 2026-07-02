@@ -69,6 +69,7 @@ public class MenuCriacaoEvento {
         CategoriaSubmissao categoria = escolherCategoria();
 
         Evento evento = eventoService.iniciarNovoEvento(
+                usuario,
                 nome,
                 cidade,
                 dataInicio,
