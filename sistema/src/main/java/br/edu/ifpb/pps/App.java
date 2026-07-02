@@ -64,6 +64,7 @@ public class App {
         ResultadoArtigoService resultadoArtigoService = new ResultadoArtigoService();
         EmailResultadoService emailResultadoService = new EmailResultadoService();
         EmailService emailService = new EmailService();
+        
         PublicadorEventos publicadorEventos = new PublicadorEventos();
 
         publicadorEventos.adicionarObservador(new EmailAutorObserver(
