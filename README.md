@@ -45,19 +45,6 @@ O objetivo principal do projeto e demonstrar a aplicacao pratica de padroes de p
 - __Envio real ou simulado de e-mail:__ se SMTP estiver configurado, o e-mail e enviado de verdade; caso contrario, a mensagem e exibida no terminal para facilitar a demonstracao.
 - __Reinicio do evento:__ ao iniciar um novo evento, os dados do evento anterior sao descartados.
 
-## Situacao dos Requisitos
-
-- __RF01 - Start:__ implementado por `EventoService`, que cria um novo evento e limpa os dados do evento anterior.
-- __RF02 - Cadastro de usuarios:__ implementado por `UsuarioService` e acessado pelo `MenuInicial`.
-- __RF03 - Cadastro de areas tematicas:__ implementado por `EventoService` e acessado pelo `MenuCoordenacao`.
-- __RF04 - Comite tecnico:__ implementado por `ComiteService`, com registro de revisores e niveis de conhecimento.
-- __RF05 - Submissao de artigos:__ implementado parcialmente por `SubmissaoService`; o cadastro de coautores pelo terminal ainda precisa ser conectado.
-- __RF06 - Distribuicao automatica:__ a regra esta implementada em `DistribuicaoArtigosService`; a opcao do menu ainda precisa chamar `distribuir(evento)`.
-- __RF07 - Conclusao de revisao:__ implementado por `RevisaoService` e `MenuRevisor`.
-- __RF08 - Dashboard:__ em desenvolvimento.
-- __RF09 - Notificacao aos autores:__ implementado com `Observer`, `EmailAutorObserver`, `EmailResultadoService` e `EmailService`.
-- __RF10 - Novo padrao:__ atendido com `Template Method` para montar e-mails de aceite e rejeicao.
-
 ## Estrutura de Arquivos
 
 ```text
@@ -246,50 +233,6 @@ No Linux/Mac, se necessario, libere a execucao do arquivo:
 chmod +x mvnw
 ```
 
-Se no Windows aparecer a mensagem `'powershell' nao e reconhecido como um comando interno ou externo`, adicione o PowerShell ao `PATH` da sessao antes de rodar:
-
-```powershell
-$env:PATH += ";C:\Windows\System32\WindowsPowerShell\v1.0"
-```
-
-### Rodar com Maven instalado (opcional)
-
-```bash
-mvn clean compile exec:java -Dexec.mainClass="br.edu.ifpb.pps.App"
-```
-
-No PowerShell, se usar `mvn`, tambem pode ser necessario colocar o parametro `-Dexec.mainClass` entre aspas:
-
-```powershell
-mvn clean compile exec:java "-Dexec.mainClass=br.edu.ifpb.pps.App"
-```
-
-### Alternativa manual
-
-```bash
-mvn clean package
-java -cp target/classes br.edu.ifpb.pps.App
-```
-
-Se for necessario incluir as dependencias do Maven manualmente, gere o classpath:
-
-```bash
-mvn dependency:build-classpath -Dmdep.outputFile=classpath.txt
-```
-
-No PowerShell:
-
-```powershell
-$cp = Get-Content classpath.txt
-java -cp "target/classes;$cp" br.edu.ifpb.pps.App
-```
-
-No Linux/Mac/Git Bash:
-
-```bash
-CP=$(cat classpath.txt)
-java -cp "target/classes:$CP" br.edu.ifpb.pps.App
-```
 
 ## Configuracao de E-mail
 
