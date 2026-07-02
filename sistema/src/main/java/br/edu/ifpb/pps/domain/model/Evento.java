@@ -1,6 +1,7 @@
 package br.edu.ifpb.pps.domain.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.ifpb.pps.domain.enums.CategoriaSubmissao;
@@ -12,10 +13,10 @@ public class Evento {
     private LocalDate dataInicio;
     private LocalDate dataFim;
     private CategoriaSubmissao categoriaSubmissao;
+    private boolean emailsResultadoAutoresEnviados;
 
-    private List<AreaTematica> areasTematicas;
-    private List<MembroComite> membrosComite;
-    private List<Artigo> artigos; // isso aqui sai
+    private List<AreaTematica> areasTematicas = new ArrayList<>();
+    private List<MembroComite> membrosComite = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -65,27 +66,35 @@ public class Evento {
         this.categoriaSubmissao = categoriaSubmissao;
     }
 
-    public List<AreaTematica> getAreasTematicas() {
-        return areasTematicas;
+    public boolean isEmailsResultadoAutoresEnviados() {
+        return emailsResultadoAutoresEnviados;
     }
 
-    public void setAreasTematicas(List<AreaTematica> areasTematicas) {
-        this.areasTematicas = areasTematicas;
+    public void setEmailsResultadoAutoresEnviados(boolean emailsResultadoAutoresEnviados) {
+        this.emailsResultadoAutoresEnviados = emailsResultadoAutoresEnviados;
+    }
+
+    public List<AreaTematica> getAreasTematicas() {
+        return new ArrayList<>(areasTematicas);
+    }
+
+    public void adicionarAreaTematica(AreaTematica areaTematica) {
+        if (areaTematica == null) {
+            throw new IllegalArgumentException("Area tematica e obrigatoria.");
+        }
+
+        areasTematicas.add(areaTematica);
     }
 
     public List<MembroComite> getMembrosComite() {
-        return membrosComite;
+        return new ArrayList<>(membrosComite);
     }
 
-    public void setMembrosComite(List<MembroComite> membrosComite) {
-        this.membrosComite = membrosComite;
-    }
+    public void adicionarMembroComite(MembroComite membro) {
+        if (membro == null) {
+            throw new IllegalArgumentException("Membro do comite e obrigatorio.");
+        }
 
-    public List<Artigo> getArtigos() {
-        return artigos;
-    }
-
-    public void setArtigos(List<Artigo> artigos) {
-        this.artigos = artigos;
+        membrosComite.add(membro);
     }
 }

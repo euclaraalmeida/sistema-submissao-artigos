@@ -1,27 +1,23 @@
 package br.edu.ifpb.pps.domain.model;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import br.edu.ifpb.pps.domain.enums.CategoriaSubmissao;
 import br.edu.ifpb.pps.domain.enums.ResultadoDecisao;
-import br.edu.ifpb.pps.pattern.State.EstadoArtigo;
-import br.edu.ifpb.pps.domain.enums.ResultadoDecisao;
+import br.edu.ifpb.pps.domain.enums.TipoAutoria;
 import br.edu.ifpb.pps.pattern.State.ArtigoSubmetido;
-import br.edu.ifpb.pps.pattern.State.ArtigoEmRevisao;
-import br.edu.ifpb.pps.pattern.State.ArtigoFinalizado;
+import br.edu.ifpb.pps.pattern.State.EstadoArtigo;
 
 public class Artigo {
     private long id;
-    private List<Autoria> autores;
+    private List<Autoria> autores = new ArrayList<>();
     private String titulo;
-    private List<AreaTematica> areaTematica;
+    private List<AreaTematica> areasTematicas = new ArrayList<>();
     private String resumo;
-    private Evento evento; 
+    private Evento evento;
     private ResultadoDecisao resultadoDecisao;
-    private EstadoArtigo estado = new ArtigoSubmetido(); // interface
-    // e acho que o evento é necessario aqui pois como saberemos questao do artigo ter prazo paar ser submetido
-    
+    private EstadoArtigo estado = new ArtigoSubmetido();
+
     public void distribuirParaRevisao() {
         estado.distribuirParaRevisao(this);
     }
@@ -29,6 +25,22 @@ public class Artigo {
     public void finalizar(ResultadoDecisao resultado) {
         estado.finalizar(this, resultado);
     }
+
+    public void adicionarAutor(Autoria autoria) {
+        if (autoria == null) {
+            throw new IllegalArgumentException("Autoria e obrigatoria.");
+        }
+        autores.add(autoria);
+    }
+
+    
+    public void adicionarAreaTematica(AreaTematica areaTematica) {
+        if (areaTematica == null) {
+            throw new IllegalArgumentException("Area tematica e obrigatoria.");
+        }
+        areasTematicas.add(areaTematica);
+    }
+
     public long getId() {
         return id;
     }
@@ -38,11 +50,17 @@ public class Artigo {
     }
 
     public List<Autoria> getAutores() {
-        return autores;
+        return new ArrayList<>(autores);
     }
 
-    public void setAutores(List<Autoria> autores) {
-        this.autores = autores;
+    public Usuario getAutorPrincipal() {
+        for (Autoria autoria : autores) {
+            if (autoria.getTipoAutoria() == TipoAutoria.AUTOR_PRINCIPAL) {
+                return autoria.getUser();
+            }
+        }
+
+        return null;
     }
 
     public String getTitulo() {
@@ -53,12 +71,8 @@ public class Artigo {
         this.titulo = titulo;
     }
 
-    public List<AreaTematica> getAreaTematica() {
-        return areaTematica;
-    }
-
-    public void setAreaTematica(List<AreaTematica> areaTematica) {
-        this.areaTematica = areaTematica;
+    public List<AreaTematica> getAreasTematicas() {
+        return new ArrayList<>(areasTematicas);
     }
 
     public String getResumo() {
@@ -82,7 +96,7 @@ public class Artigo {
     }
 
     public void setResultadoDecisao(ResultadoDecisao resultadoDecisao) {
-        resultadoDecisao = resultadoDecisao;
+        this.resultadoDecisao = resultadoDecisao;
     }
 
     public EstadoArtigo getEstado() {
@@ -92,6 +106,4 @@ public class Artigo {
     public void setEstado(EstadoArtigo estado) {
         this.estado = estado;
     }
-
-    
 }
