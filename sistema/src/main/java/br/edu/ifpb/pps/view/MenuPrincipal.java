@@ -34,10 +34,13 @@ public class MenuPrincipal {
             ui.mostrarMensagem("Evento: " + evento.getNome());
             ui.mostrarMensagem("");
             ui.mostrarMensagem("1 - Area do Autor/Pesquisador");
-            ui.mostrarMensagem("2 - Area do Revisor/Membro do Comite");
 
             if (usuario.isCoordenador()) {
                 ui.mostrarMensagem("3 - Area da Coordenacao");
+            }
+            
+            if(comiteService.ehMembro(usuario,evento)){
+                ui.mostrarMensagem("2 - Area do Revisor/Membro do Comite");
             }
 
             ui.mostrarMensagem("0 - Logout");

@@ -72,6 +72,8 @@ public class MenuCoordenacao {
             ui.mostrarMensagem("4 - Distribuir artigos");
             ui.mostrarMensagem("5 - Listar membros do comite");
             ui.mostrarMensagem("6 - Dashboard");
+            ui.mostrarMensagem("6 - Consultas");
+
             ui.mostrarMensagem("0 - Voltar");
 
             String opcao = ui.lerTexto("Escolha");
@@ -96,6 +98,9 @@ public class MenuCoordenacao {
                         break;
                     case "6":
                         visualizarDashboard(evento);
+                        break;
+                    case "7":
+                        consultarArtigos(evento);
                         break;
                     case "0":
                         rodando = false;
